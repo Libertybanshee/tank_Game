@@ -3,4 +3,7 @@
              les valeur clavier dans un fichier a part
 
 - Raccourcie clavier 
-pressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)
+
+- PressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)
+
+- Activez/Desactivez le Debbug uniquement avec F1 contre F1 puis F2 actuellement

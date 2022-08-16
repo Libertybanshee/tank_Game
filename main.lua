@@ -24,7 +24,7 @@ tank.Y = spawnPlayer.Y + (spawnPlayer.taille / 2)
 tank.Angle = spawnPlayer.Angle
 tank.Speed = 2
 
-S = "Off"
+debug = false
 
 -- Raccourcie clavier (Non utilisé)
 pressZ = love.keyboard.isDown("z")
@@ -60,9 +60,12 @@ function love.update(dt)
         local ratio_Y = math.sin(tank.Angle)
         tank.X = tank.X - (tank.Speed * ratio_X)
         tank.Y = tank.Y - (tank.Speed * ratio_Y)
-        S = "Up"
-    else
-        S = "Off"
+    end
+    -- Activer le Debug
+    if love.keyboard.isDown("f1") then
+        debug = true 
+    elseif love.keyboard.isDown("f2") and debug == true then
+        debug = false
     end
 end
 
@@ -71,14 +74,16 @@ function love.draw()
     love.graphics.draw(imgPlayer,tank.X,tank.Y,tank.Angle,0.2,0.2, imgPlayer:getWidth()/ 2, imgPlayer:getHeight()/2)
 
     -- debug
-    love.graphics.print("Touche S : " .. tostring(S))
-    love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
-    love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
-    love.graphics.print("Valeur Angle : " .. tostring(tank.Angle), 0, (15 * 3))
+    if debug == true then
+        love.graphics.print("Touche S : " .. tostring(S))
+        love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
+        love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
+        love.graphics.print("Valeur Angle : " .. tostring(tank.Angle), 0, (15 * 3))
+    end
 
     -- spanw start
     love.graphics.rectangle("line", spawnPlayer.X, spawnPlayer.Y, spawnPlayer.taille, spawnPlayer.taille)
 end
 
-function love.keypressed(key)
+function love.keypressed(key)    
 end
