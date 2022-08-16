@@ -1,0 +1,6 @@
+- Séparé le variable via des fichier puis les utiliser dans un fichier main
+    exemple: mettres le valeur tank dans un fichier a part
+             les valeur clavier dans un fichier a part
+
+- Raccourcie clavier 
+pressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)

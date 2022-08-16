@@ -1,0 +1,20 @@
+- But de victoire
+    Aller d'un point A à B où Nettoyer la zone (Transporter où sécurisé)
+
+- Conduite du Tank
+    Droite/Gauche pour s'orienter
+    Haut/Bas pour avancer où reculer
+
+- Plusieur Type de tir
+    Visée avec la souris
+    Tir normal, vitesse normal
+    Tir puissant, vitesse plus lent
+
+- Ennemi
+    Ennemi visible/Ennemi caché
+    Certain ennemi drop un item
+
+- Liste item
+    Armure Up
+    Boost Up
+    Tir Up
