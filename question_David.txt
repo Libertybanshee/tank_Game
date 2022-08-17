@@ -1,6 +1,4 @@
-- Séparé le variable via des fichier puis les utiliser dans un fichier main
-    exemple: mettres le valeur tank dans un fichier a part
-             les valeur clavier dans un fichier a part
+- Exploiter les imports et requis d'un fichier
 
 - Raccourcie clavier 
     touche relaché
@@ -8,3 +6,7 @@
 - PressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)
 
 - Activez/Desactivez le Debbug uniquement avec F1 contre F1 puis F2 actuellement
+
+- créer un élément qui se déclenche au bout de X temps
+
+- créer une condition d'arrêt d'une variable dans update

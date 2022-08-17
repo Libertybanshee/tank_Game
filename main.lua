@@ -6,6 +6,9 @@ end
 -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf("no")
 
+SST = 0
+SSC = 0
+
 -- projectiles
 projectiles = {}
 
@@ -101,6 +104,13 @@ function love.update(dt)
     for k, projectile in ipairs(projectiles) do
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
+        -- Fonctionnalité abondonnée
+        if projectile.mode == "surcharge" then
+            SST = SST + dt * SSC
+            if SST >= 10 then
+                SST = 0
+            end
+        end
     end
 end
 
@@ -129,6 +139,7 @@ function love.draw()
         love.graphics.print("Nb de projectiles : " .. tostring(#projectiles), 0, (15 * 4))
         love.graphics.print("X.Tank : " .. tostring(imgFocus:getWidth() / 4), 0, (15 * 5))
         love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
+        love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
 
     end
 
@@ -149,7 +160,7 @@ function love.mousepressed(b)
     -- Test Clique droit (Remettre dans la MousePressed avec David)
     if love.mouse.isDown(2) then
         rightMouse = "Up"
-        Shoot(tank.X, tank.Y, tank.focus, 250, imgProj_2) 
+        Shoot(tank.X, tank.Y, tank.focus, 1000, imgProj_2, "surcharge") 
     else
         rightMouse = "Off"
     end
