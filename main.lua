@@ -6,9 +6,8 @@ end
 -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf("no")
 
--- Projectile
-projectile = {}
-projectile.x = null
+-- projectiles
+projectiles = {}
 
 -- Start Spawn
 spawnPlayer = {}
@@ -34,6 +33,17 @@ pressQ = love.keyboard.isDown("q")
 pressEspace = love.keyboard.isDown("space")
 leftMouse = "Off"
 rightMouse = "Off"
+
+-- Fonction Tir
+function Shoot(pX, pY, pAngle, pVitesse, pImg, pMode)    
+    local projectile = {}
+          projectile.X = pX
+          projectile.Y = pY
+          projectile.Vitesse = pVitesse
+          projectile.Image = pImg
+          projectile.Mode = pMode
+    table.insert(projectiles, projectile)
+end
 
 function love.load()
     -- Fichier de l'image Tank Player
@@ -70,16 +80,19 @@ function love.update(dt)
     elseif love.keyboard.isDown("f2") and debug == true then
         debug = false
     end  
-    -- Test Clique gauche
+
+    -- Test Clique gauche (Remettre dans la MousePressed avec David)
     if love.mouse.isDown(1) then
         leftMouse = "Up"
+        Shoot() 
     else
         leftMouse = "Off"
     end
 
-    -- Test Clique droit
+    -- Test Clique droit (Remettre dans la MousePressed avec David)
     if love.mouse.isDown(2) then
         rightMouse = "Up"
+        table.remove(projectiles, b)
     else
         rightMouse = "Off"
     end
@@ -89,16 +102,23 @@ function love.draw()
     -- Afficher le tank player
     love.graphics.draw(imgPlayer,tank.X,tank.Y,tank.Angle,0.2,0.2, imgPlayer:getWidth()/ 2, imgPlayer:getHeight()/2)
 
+    -- Afficher projectile
+    -- love.graphics.draw()
+
     -- debug
     if debug == true then
         love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
         love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
         love.graphics.print("Valeur Angle : " .. tostring(tank.Angle), 0, (15 * 3))
+        love.graphics.print("Nb de projectiles : " .. tostring(#projectiles), 0, (15 * 4))
     end
 
     -- spanw start
     love.graphics.rectangle("line", spawnPlayer.X, spawnPlayer.Y, spawnPlayer.taille, spawnPlayer.taille)
+end
+
+function love.mousepressed(b)  
 end
 
 function love.keypressed(key)  
