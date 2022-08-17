@@ -31,6 +31,9 @@ pressZ = love.keyboard.isDown("z")
 pressD = love.keyboard.isDown("d")
 pressS = love.keyboard.isDown("s")
 pressQ = love.keyboard.isDown("q")
+pressEspace = love.keyboard.isDown("space")
+leftMouse = "Off"
+rightMouse = "Off"
 
 function love.load()
     -- Fichier de l'image Tank Player
@@ -66,6 +69,19 @@ function love.update(dt)
         debug = true 
     elseif love.keyboard.isDown("f2") and debug == true then
         debug = false
+    end  
+    -- Test Clique gauche
+    if love.mouse.isDown(1) then
+        leftMouse = "Up"
+    else
+        leftMouse = "Off"
+    end
+
+    -- Test Clique droit
+    if love.mouse.isDown(2) then
+        rightMouse = "Up"
+    else
+        rightMouse = "Off"
     end
 end
 
@@ -75,7 +91,7 @@ function love.draw()
 
     -- debug
     if debug == true then
-        love.graphics.print("Touche S : " .. tostring(S))
+        love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
         love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
         love.graphics.print("Valeur Angle : " .. tostring(tank.Angle), 0, (15 * 3))
@@ -85,5 +101,5 @@ function love.draw()
     love.graphics.rectangle("line", spawnPlayer.X, spawnPlayer.Y, spawnPlayer.taille, spawnPlayer.taille)
 end
 
-function love.keypressed(key)    
+function love.keypressed(key)  
 end

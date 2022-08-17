@@ -3,6 +3,7 @@
              les valeur clavier dans un fichier a part
 
 - Raccourcie clavier 
+    touche relaché
 
 - PressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)
 
