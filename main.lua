@@ -9,7 +9,7 @@ io.stdout:setvbuf("no")
 SST = 0
 SSC = 0
 
--- Cadre de Visée
+-- Cadre de Visée 
 local focus = {}
 focus.X = love.mouse.getX()
 focus.Y = love.mouse.getY()
@@ -22,9 +22,9 @@ end
 
 -- Start Spawn
 local spawnPlayer = {}
-spawnPlayer.X = love.graphics:getWidth() / 2
-spawnPlayer.Y = love.graphics:getHeight() / 2
 spawnPlayer.taille = 40
+spawnPlayer.X = love.graphics:getWidth() / 2 - spawnPlayer.taille
+spawnPlayer.Y = love.graphics:getHeight() / 1.05 - spawnPlayer.taille
 spawnPlayer.angle = - math.pi / 2
 
 -- Player Value
@@ -64,7 +64,7 @@ end
 
 -- liste Ennemis
     local ennemis = {}
--- Fonction Spawn Ennemi
+-- Fonction Spawn Ennemi / Call ligne 100 / Draw ligne 153
 function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
     local ennemi = {}
           ennemi.X = pX
@@ -78,15 +78,31 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
     table.insert(ennemis, ennemi)
 end
 
+
 function love.load()
-    -- Fichier de l'image Tank Player
+-- Fichier de l'image Tank Player
     imgPlayer = love.graphics.newImage("img/Player/tank_Vert1.png")
     imgFocus = love.graphics.newImage("img/Player/tourelle1.png")
     imgProj_1 = love.graphics.newImage("img/Projectile/Tir_1.png")
     imgProj_2 = love.graphics.newImage("img/Projectile/Tir_2.png")
+    imgEnnemi_1 = love.graphics.newImage("img/Ennemi/tank_Bleu1.png")
 
-    -- Apparation des Ennemi, legende des paramètres ligne 67
-    SpanwEnnemi(100, 100, 0, 0.2, 0, imgProj_2)
+-- Apparation des Ennemi
+    -- Orientation spawn
+    northWest = 7.5
+    north = - math.pi 
+    northEast = - math.pi / 2
+    east = 0
+    southEast = math.pi / 2
+    south = math.pi / 2
+    southWest = 4.5
+    west = - math.pi / 0.5
+    -- fonction + legende des paramètres ligne 67 / Draw ligne 153
+    SpanwEnnemi(280, 100, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(330, 100, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(380, 100, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(430, 100, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(480, 100, south, 0.225, 0, imgEnnemi_1)
 end
 
 function love.update(dt)
@@ -133,16 +149,21 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- Afficher le tank player
+    -- Afficher le tank player -> paramètre ligne 30
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
 
-    -- Afficher Tourelle
+    -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
+    for j, ennemi in ipairs(ennemis) do
+        love.graphics.draw(ennemi.img, ennemi.X, ennemi.Y, ennemi.angle, ennemi.taille, ennemi.taille, ennemi.img:getWidth() / 2, ennemi.img:getHeight() / 2)
+    end
+
+    -- Afficher Tourelle -> paramètre ligne 30
     love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2, imgFocus:getWidth() / 4, imgFocus:getHeight() / 2)
 
-    -- Afficher la Visée 
+    -- Afficher la Visée -> paramètre ligne 12
     love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille)
 
-    -- Afficher projectile
+    -- Afficher projectile -> paramètre ligne 54
     for k, projectile in ipairs(projectiles) do
         love.graphics.draw(projectile.img, projectile.X, projectile.Y, projectile.angle, 1, 1, imgProj_1:getWidth() / 2, imgProj_1:getHeight() / 2)
     end
@@ -153,7 +174,7 @@ function love.draw()
         love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
         love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
-        love.graphics.print("Valeur Angle : " .. tostring(tank.angle), 0, (15 * 3))
+        love.graphics.print("Valeur Angle : " .. tostring(tank.focus), 0, (15 * 3))
         love.graphics.print("Nb de projectiles : " .. tostring(#projectiles), 0, (15 * 4))
         love.graphics.print("X.Tank : " .. tostring(imgFocus:getWidth() / 4), 0, (15 * 5))
         love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
