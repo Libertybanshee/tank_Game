@@ -27,10 +27,13 @@ function math.angle(x1,y1, x2,y2)
 end
 
 -- Start Spawn
+screenLargeur = love.graphics:getWidth()
+screenHauteur = love.graphics:getHeight()
+
 local spawnPlayer = {}
 spawnPlayer.taille = 40
-spawnPlayer.X = love.graphics:getWidth() / 2 - spawnPlayer.taille
-spawnPlayer.Y = love.graphics:getHeight() / 1.05 - spawnPlayer.taille
+spawnPlayer.X = screenLargeur / 2 - spawnPlayer.taille
+spawnPlayer.Y = screenHauteur / 1.05 - spawnPlayer.taille
 spawnPlayer.angle = - math.pi / 2
 
 -- Player Value / update ligne 117 / Draw ligne 173
@@ -109,6 +112,13 @@ function love.load()
     SpanwEnnemi(380, 100, south, 0.225, 0, imgEnnemi_1)
     SpanwEnnemi(430, 100, south, 0.225, 0, imgEnnemi_1)
     SpanwEnnemi(480, 100, south, 0.225, 0, imgEnnemi_1)
+
+-- Destination Trajet / Draw ligne 203 / Load ligne 180 / Update ligne 180
+          goal = {}
+          goal.X = screenLargeur / 2
+          goal.Y = screenHauteur / 2
+          goal.taille = 40
+          goal.hit = false
 end
 
 function love.update(dt)
@@ -160,12 +170,20 @@ function love.update(dt)
         -- Parcours de la liste des projectiles
         for k = #projectiles, 1, -1 do
             local projectileG = projectiles[k]
-            --Suppression de l'ennemi après un impact de projectile
+            -- Suppression de l'ennemi après un impact de projectile
             if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < 10 then
                 table.remove(ennemis, n)
                 table.remove(projectiles, k)
             end
         end
+    end
+
+-- Condition de victoire par destination / load 1igne 116 / Draw ligne 202 
+    if distance(tank.X, tank.Y, goal.X, goal.Y) < 20 then
+        goal.hit = true
+        print("SUCCESS")
+    else
+        goal.hit = false
     end
 end
 
@@ -188,7 +206,11 @@ function love.draw()
     for k, projectile in ipairs(projectiles) do
         love.graphics.draw(projectile.img, projectile.X, projectile.Y, projectile.angle, 1, 1, imgProj_1:getWidth() / 2, imgProj_1:getHeight() / 2)
     end
-    -- love.graphics.draw()
+    -- Destination Trajet / load 1igne 116 / Update ligne 180
+    love.graphics.rectangle( "line", goal.X, goal.Y, goal.taille, goal.taille)
+    if goal.hit == true then
+        love.graphics.print("SUCCESS", screenLargeur / 2, screenHauteur / 2)
+    end
 
     -- debug
     if debug == true then
@@ -201,6 +223,8 @@ function love.draw()
         love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
         love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
         love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
+        love.graphics.print("Largeur écran : " .. tostring(screenLargeur), screenLargeur - 123, (15 * 0))
+        love.graphics.print("Hauteur écran : " .. tostring(screenHauteur), screenLargeur - 125, (15 * 1))
 
     end
 
