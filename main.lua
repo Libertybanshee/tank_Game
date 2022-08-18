@@ -33,7 +33,7 @@ spawnPlayer.X = love.graphics:getWidth() / 2 - spawnPlayer.taille
 spawnPlayer.Y = love.graphics:getHeight() / 1.05 - spawnPlayer.taille
 spawnPlayer.angle = - math.pi / 2
 
--- Player Value
+-- Player Value / update ligne 117 / Draw ligne 173
 local tank = {}
 tank.X = spawnPlayer.X + (spawnPlayer.taille / 2)
 tank.Y = spawnPlayer.Y + (spawnPlayer.taille / 2)
@@ -54,7 +54,7 @@ pressEspace = love.keyboard.isDown("space")
 leftMouse = "Off"
 rightMouse = "Off"
 
--- Liste projectiles
+-- Liste projectiles / Draw ligne 188 / Update ligne 143
     local projectiles = {}
 -- Fonction Tir
 function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)    
@@ -140,7 +140,7 @@ function love.update(dt)
     focus.X, focus.Y = love.mouse.getPosition()
     tank.focus = math.angle(tank.X, tank.Y, focus.X, focus.Y)
 
--- Gestion des projectile
+-- Gestion des projectile / Draw ligne 188
     for k, projectile in ipairs(projectiles) do
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
@@ -154,24 +154,23 @@ function love.update(dt)
     end
 
 -- Gestion des Ennemis / create list at ligne 71 
+    -- Parcours de la liste des ennemis
     for n = #ennemis, 1, -1 do
         local ennemiG = ennemis[n]
-
+        -- Parcours de la liste des projectiles
         for k = #projectiles, 1, -1 do
             local projectileG = projectiles[k]
-
+            --Suppression de l'ennemi après un impact de projectile
             if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < 10 then
                 table.remove(ennemis, n)
                 table.remove(projectiles, k)
             end
-
-            print(#ennemis)
         end
     end
 end
 
 function love.draw()
-    -- Afficher le tank player -> paramètre ligne 30
+    -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
 
     -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
@@ -185,7 +184,7 @@ function love.draw()
     -- Afficher la Visée -> paramètre ligne 12
     love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille)
 
-    -- Afficher projectile -> paramètre ligne 54
+    -- Afficher projectile -> paramètre ligne 54 / update ligne 143
     for k, projectile in ipairs(projectiles) do
         love.graphics.draw(projectile.img, projectile.X, projectile.Y, projectile.angle, 1, 1, imgProj_1:getWidth() / 2, imgProj_1:getHeight() / 2)
     end
