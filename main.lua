@@ -19,7 +19,7 @@ end
 local focus = {}
 focus.X = love.mouse.getX()
 focus.Y = love.mouse.getY()
-focus.taille = 40
+focus.taille = 0.2
 
 -- Algo de l'angle focus
 function math.angle(x1,y1, x2,y2) 
@@ -95,6 +95,7 @@ function love.load()
     imgProj_1 = love.graphics.newImage("img/Projectile/Tir_1.png")
     imgProj_2 = love.graphics.newImage("img/Projectile/Tir_2.png")
     imgEnnemi_1 = love.graphics.newImage("img/Ennemi/tank_Bleu1.png")
+    imgTarget = love.graphics.newImage("img/UI/target_1.png")
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -202,7 +203,8 @@ function love.draw()
     love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2, imgFocus:getWidth() / 4, imgFocus:getHeight() / 2)
 
     -- Afficher la Visée -> paramètre ligne 12
-    love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille)
+    -- love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille) ANCIENNE VISÉE
+    love.graphics.draw(imgTarget, focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), 0, focus.taille, focus.taille, imgTarget:getWidth() / 2, imgTarget:getHeight() / 2)
 
     -- Afficher projectile -> paramètre ligne 54 / update ligne 143
     for k, projectile in ipairs(projectiles) do
