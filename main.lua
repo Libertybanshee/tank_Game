@@ -6,8 +6,14 @@ end
 -- Cette ligne permet d'afficher des traces dans la console pendant l'éxécution
 io.stdout:setvbuf("no")
 
+-- Variable d'essai Coding
 SST = 0
 SSC = 0
+
+-- Algo impact elements
+function distance(x1, y1, x2, y2)
+    return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ 0.5
+end
 
 -- Cadre de Visée 
 local focus = {}
@@ -62,7 +68,7 @@ function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)
     table.insert(projectiles, projectile)
 end
 
--- liste Ennemis
+-- liste Ennemis / Gestion ligne 156
     local ennemis = {}
 -- Fonction Spawn Ennemi / Call ligne 100 / Draw ligne 153
 function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
@@ -144,6 +150,22 @@ function love.update(dt)
             if SST >= 10 then
                 SST = 0
             end
+        end
+    end
+
+-- Gestion des Ennemis / create list at ligne 71 
+    for n = #ennemis, 1, -1 do
+        local ennemiG = ennemis[n]
+
+        for k = #projectiles, 1, -1 do
+            local projectileG = projectiles[k]
+
+            if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < 10 then
+                table.remove(ennemis, n)
+                table.remove(projectiles, k)
+            end
+
+            print(#ennemis)
         end
     end
 end
