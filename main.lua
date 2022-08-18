@@ -9,11 +9,8 @@ io.stdout:setvbuf("no")
 SST = 0
 SSC = 0
 
--- projectiles
-projectiles = {}
-
 -- Cadre de Visée
-focus = {}
+local focus = {}
 focus.X = love.mouse.getX()
 focus.Y = love.mouse.getY()
 focus.taille = 40
@@ -24,14 +21,14 @@ function math.angle(x1,y1, x2,y2)
 end
 
 -- Start Spawn
-spawnPlayer = {}
+local spawnPlayer = {}
 spawnPlayer.X = love.graphics:getWidth() / 2
 spawnPlayer.Y = love.graphics:getHeight() / 2
 spawnPlayer.taille = 40
 spawnPlayer.angle = - math.pi / 2
 
 -- Player Value
-tank = {}
+local tank = {}
 tank.X = spawnPlayer.X + (spawnPlayer.taille / 2)
 tank.Y = spawnPlayer.Y + (spawnPlayer.taille / 2)
 tank.angle = spawnPlayer.angle
@@ -51,16 +48,34 @@ pressEspace = love.keyboard.isDown("space")
 leftMouse = "Off"
 rightMouse = "Off"
 
+-- Liste projectiles
+    local projectiles = {}
 -- Fonction Tir
-function Shoot(pX, pY, pAngle, pVitesse, pImg, pMode)    
+function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)    
     local projectile = {}
           projectile.X = pX
           projectile.Y = pY
           projectile.angle = pAngle
           projectile.vitesse = pVitesse
           projectile.img = pImg
-          projectile.mode = pMode
+          projectile.shoot = pShoot
     table.insert(projectiles, projectile)
+end
+
+-- liste Ennemis
+    local ennemis = {}
+-- Fonction Spawn Ennemi
+function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
+    local ennemi = {}
+          ennemi.X = pX
+          ennemi.Y = pY
+          ennemi.angle = pAngle
+          ennemi.taille = pTaille
+          ennemi.vitesse = pVitesse
+          ennemi.img = pImg
+          ennemi.shoot = pShoot
+          ennemi.AI = pAI
+    table.insert(ennemis, ennemi)
 end
 
 function love.load()
@@ -69,6 +84,9 @@ function love.load()
     imgFocus = love.graphics.newImage("img/Player/tourelle1.png")
     imgProj_1 = love.graphics.newImage("img/Projectile/Tir_1.png")
     imgProj_2 = love.graphics.newImage("img/Projectile/Tir_2.png")
+
+    -- Apparation des Ennemi, legende des paramètres ligne 67
+    SpanwEnnemi(100, 100, 0, 0.2, 0, imgProj_2)
 end
 
 function love.update(dt)
@@ -105,7 +123,7 @@ function love.update(dt)
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
         -- Fonctionnalité abondonnée
-        if projectile.mode == "surcharge" then
+        if projectile.shoot == "surcharge" then
             SST = SST + dt * SSC
             if SST >= 10 then
                 SST = 0
@@ -140,6 +158,7 @@ function love.draw()
         love.graphics.print("X.Tank : " .. tostring(imgFocus:getWidth() / 4), 0, (15 * 5))
         love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
         love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
+        love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
 
     end
 

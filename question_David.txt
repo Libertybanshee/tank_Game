@@ -10,3 +10,5 @@
 - créer un élément qui se déclenche au bout de X temps
 
 - créer une condition d'arrêt d'une variable dans update
+
+- not debug
