@@ -181,7 +181,6 @@ function love.update(dt)
 -- Condition de victoire par destination / load 1igne 116 / Draw ligne 202 
     if distance(tank.X, tank.Y, goal.X, goal.Y) < 20 then
         goal.hit = true
-        print("SUCCESS")
     else
         goal.hit = false
     end
@@ -209,7 +208,7 @@ function love.draw()
     -- Destination Trajet / load 1igne 116 / Update ligne 180
     love.graphics.rectangle( "line", goal.X, goal.Y, goal.taille, goal.taille)
     if goal.hit == true then
-        love.graphics.print("SUCCESS", screenLargeur / 2, screenHauteur / 2)
+        love.graphics.print("GOOD !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
     end
 
     -- debug
