@@ -119,6 +119,9 @@ function love.load()
 end
 
 function love.update(dt)
+-- Raccourcie Souris
+    mouseR = love.mouse.isDown(2)
+    mouseL = love.mouse.isDown(1)
 
 -- Raccourcie Clavier
     pressZ = love.keyboard.isDown("z")
@@ -159,13 +162,19 @@ function love.update(dt)
     for k, projectile in ipairs(projectiles) do
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
-        -- Fonctionnalité abondonnée
-        if projectile.shoot == "surcharge" then
-            SST = SST + dt * SSC
-            if SST >= 10 then
-                SST = 0
-            end
+    end
+    if mouseR then
+        if charge == false then
+            timer = timer - (1 / 30)
         end
+    else
+        timer = 4
+        charge = false
+    end
+    if timer <= 0.9 and charge == false then
+        charge = true
+        Shoot(tank.X, tank.Y, tank.focus, 1000, imgProj_2, "surcharge") 
+        timer = 4
     end
 
 -- Gestion des Ennemis / create list at ligne 71 
@@ -195,38 +204,45 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- Afficher le tank player -> paramètre ligne 30 / update 117
+-- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
 
-    -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
+-- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
     for j, ennemi in ipairs(ennemis) do
         love.graphics.draw(ennemi.img, ennemi.X, ennemi.Y, ennemi.angle, ennemi.taille, ennemi.taille, ennemi.img:getWidth() / 2, ennemi.img:getHeight() / 2)
     end
 
-    -- Afficher Tourelle -> paramètre ligne 30
+-- Afficher Tourelle -> paramètre ligne 30
     love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2, imgFocus:getWidth() / 4, imgFocus:getHeight() / 2)
 
-    -- Afficher la Visée -> paramètre ligne 12
+-- Afficher la Visée -> paramètre ligne 12
     -- love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille) ANCIENNE VISÉE
     love.graphics.draw(imgTarget, focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), 0, focus.taille, focus.taille, imgTarget:getWidth() / 2, imgTarget:getHeight() / 2)
 
-    -- Afficher projectile -> paramètre ligne 54 / update ligne 143
+-- Afficher projectile -> paramètre ligne 54 / update ligne 143
     for k, projectile in ipairs(projectiles) do
         love.graphics.draw(projectile.img, projectile.X, projectile.Y, projectile.angle, 1, 1, imgProj_1:getWidth() / 2, imgProj_1:getHeight() / 2)
     end    
+    -- Texte Tir Chargé * goal.hit == false est ajouté pour évité la supersition du texte GOOD !!*
+    if mouseR and goal.hit == false then
+        love.graphics.print(timer, tank.X - 8, tank.Y - 55, 0, 2, 2)
+        if mouseR and timer == 4 then
+            love.graphics.print("BOUM !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
+        end
+    end
 
-    -- spanw start
+-- spanw start
     love.graphics.print( "START", spawnPlayer.X - 10, spawnPlayer.Y - 25 , 0, 1.5, 1.5)
     love.graphics.rectangle("line", spawnPlayer.X, spawnPlayer.Y, spawnPlayer.taille, spawnPlayer.taille)
 
-    -- Destination Trajet / load 1igne 116 / Update ligne 180
+-- Destination Trajet / load 1igne 116 / Update ligne 180
     love.graphics.print( "FINISH", goal.X - 10, goal.Y - 25 , 0, 1.5, 1.5)
     love.graphics.rectangle( "line", goal.X, goal.Y, goal.taille, goal.taille)
     if goal.hit == true then
         love.graphics.print("GOOD !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
     end
 
-    -- Afficher le debug / create variable ligne 49 / keypress ligne 262 
+-- Afficher le debug / create variable ligne 49 / keypress ligne 262 
     if debug == true then
         love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
@@ -255,7 +271,6 @@ function love.mousepressed(b)
     -- Test Clique droit (Remettre dans la MousePressed avec David)
     if love.mouse.isDown(2) then
         rightMouse = "Up"
-        Shoot(tank.X, tank.Y, tank.focus, 1000, imgProj_2, "surcharge") 
     else
         rightMouse = "Off"
     end

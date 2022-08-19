@@ -1,14 +1,3 @@
-- Exploiter les imports et requis d'un fichier
+1 - Au dessus du tank, résoudre la supersition du texte "timer" et "BOUM !!" 
 
-- Raccourcie clavier 
-    touche relaché
-
-- PressZ = love.keyboard.isDown("z") --> (ne fonctionne pas)
-
-- Activez/Desactivez le Debbug uniquement avec F1 contre F1 puis F2 actuellement
-
-- créer un élément qui se déclenche au bout de X temps
-
-- créer une condition d'arrêt d'une variable dans update
-
-- not debug
+2 - Au dessus du tank, affichez un chiffre un chiffre après la virgule du timer
