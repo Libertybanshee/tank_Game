@@ -46,6 +46,7 @@ tank.Speed = 2
 tank.tourelleX = 0
 tank.tourelleY = 8
 
+-- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
 
 -- Raccourcie clavier (Non utilisé)
@@ -222,7 +223,7 @@ function love.draw()
         love.graphics.print("GOOD !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
     end
 
-    -- debug
+    -- Afficher le debug / create variable ligne 49 / keypress ligne 262 
     if debug == true then
         love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
@@ -258,10 +259,16 @@ function love.mousepressed(b)
 end
 
 function love.keypressed(key)  
-    -- Activer le Debug
+    -- Activer le Debug / create variable ligne 49 / draw ligne 226
     if love.keyboard.isDown("f1") then
-        debug = true 
-    elseif love.keyboard.isDown("f2") and debug == true then
-        debug = false
+        debug = not debug
     end  
+
+    if love.keyboard.isDown("f2") then
+        if debug == true then 
+            debug = false
+        else 
+            debug = true
+        end
+    end
 end
