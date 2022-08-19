@@ -50,11 +50,6 @@ tank.tourelleY = 8
 debug = false
 
 -- Raccourcie clavier (Non utilisé)
-pressZ = love.keyboard.isDown("z")
-pressD = love.keyboard.isDown("d")
-pressS = love.keyboard.isDown("s")
-pressQ = love.keyboard.isDown("q")
-pressEspace = love.keyboard.isDown("space")
 leftMouse = "Off"
 rightMouse = "Off"
 
@@ -124,24 +119,32 @@ function love.load()
 end
 
 function love.update(dt)
+
+-- Raccourcie Clavier
+    pressZ = love.keyboard.isDown("z")
+    pressD = love.keyboard.isDown("d")
+    pressS = love.keyboard.isDown("s")
+    pressQ = love.keyboard.isDown("q")
+    pressSpace = love.keyboard.isDown("space")
+
 -- Déplacer Tank Player
     -- Tourner a gauche
-    if love.keyboard.isDown("q") and love.keyboard.isDown("z") or love.keyboard.isDown("d") and love.keyboard.isDown("s") then
+    if pressQ and pressZ or pressD and pressS then
         tank.angle = tank.angle - 0.02
     end
     -- Tourner a droite
-    if love.keyboard.isDown("d") and love.keyboard.isDown("z") or love.keyboard.isDown("q") and love.keyboard.isDown("s") then
+    if pressD and pressZ or pressQ and pressS then
         tank.angle = tank.angle + 0.02
     end
     -- Avancer
-    if love.keyboard.isDown("z") then
+    if pressZ then
         local ratio_X = math.cos(tank.angle)
         local ratio_Y = math.sin(tank.angle)
         tank.X = tank.X + (tank.Speed * ratio_X)
         tank.Y = tank.Y + (tank.Speed * ratio_Y)
     end
     -- Reculer
-    if love.keyboard.isDown("s") then
+    if pressS then
         local ratio_X = math.cos(tank.angle)
         local ratio_Y = math.sin(tank.angle)
         tank.X = tank.X - (tank.Speed * ratio_X)
