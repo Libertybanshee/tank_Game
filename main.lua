@@ -76,6 +76,7 @@ tank.tourelleY = 8
 
 -- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
+debug_Grille = false
 
 -- Raccourcie clavier (Non utilisé)
 leftMouse = "Off"
@@ -243,11 +244,11 @@ function love.update(dt)
 end
 
 function love.draw()
--- Essaie Map
+-- Afficher Carte
     love.graphics.draw(imgMap,0 ,0)
 
-  c,l = nil
-  
+    -- Afficher un éléments par Tuile    
+  c,l = nil  
   for l=1,MAP_HEIGHT do
     for c=1,MAP_WIDTH do
       local id = Game.Map[l][c]
@@ -314,6 +315,16 @@ function love.draw()
         love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
         love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
     end
+    
+    -- Afficher la grille pour debug
+    if debug_Grille == true then
+        for nbLigne_V = 1, MAP_WIDTH do
+            love.graphics.line((nbLigne_V * 40), 0, (nbLigne_V * 40), 600)
+        end
+        for nbLigne_H = 1, MAP_HEIGHT do
+            love.graphics.line( 0, (nbLigne_H * 40), 800, (nbLigne_H * 40))
+        end
+    end
 end
 
 function love.mousepressed(b)  
@@ -341,10 +352,10 @@ function love.keypressed(key)
     end  
     -- Méthode 2
     if love.keyboard.isDown("f2") then
-        if debug == true then 
-            debug = false
+        if debug_Grille == true then 
+            debug_Grille = false
         else 
-            debug = true
+            debug_Grille = true
         end
     end
 end
