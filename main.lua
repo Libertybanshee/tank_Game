@@ -21,6 +21,7 @@ local MAP_WIDTH = 20
 local MAP_HEIGHT = 15
 local TILE_WIDTH = 40
 local TILE_HEIGHT = 40
+local map
 
 Game.Map = {}
 Game.Map =  {
@@ -37,11 +38,12 @@ Game.Map =  {
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+              { 0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
             }
 
 Game.TileTextures = {}
+Game.TileType = {}
 
 -- Cadre de Visée 
 local focus = {}
@@ -73,6 +75,9 @@ tank.focus = 0
 tank.Speed = 2
 tank.tourelleX = 0
 tank.tourelleY = 8
+tank.ligne = 1
+tank.colonne = 1
+tank.sol = 0
 
 -- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
@@ -112,6 +117,11 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
     table.insert(ennemis, ennemi)
 end
 
+-- Détecte le sol sous le tank et le mémorise dans tank.sol
+function DetecteSol()
+    
+end
+
 
 function love.load()
 -- Fichier de l'image Tank Player
@@ -124,14 +134,19 @@ function love.load()
 
     -- Terrain par tuile
     Game.TileTextures[0] = nil
-    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/road_1.png")
+    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/road_0.png")
     Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass_1.png")
     Game.TileTextures[3] = love.graphics.newImage("img/Terrain/road_2.png")
     Game.TileTextures[4] = love.graphics.newImage("img/Terrain/road_3.png")
     Game.TileTextures[5] = love.graphics.newImage("img/Terrain/road_4.png")
 
-    -- Carte
+    -- Fichier de la Carte
     imgMap = love.graphics.newImage("img/Map/02_Mirror_Islands.png")
+
+    -- Evènement de terrain
+    if distance(tank.X, tank.Y, 180, 540) < 20 then
+        print("COLISION")
+    end
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -192,6 +207,20 @@ function love.update(dt)
         local ratio_Y = math.sin(tank.angle)
         tank.X = tank.X - (tank.Speed * ratio_X)
         tank.Y = tank.Y - (tank.Speed * ratio_Y)
+    end
+
+-- Prérequis collision / enregistrer les anciennes valeurs
+    local old_ligne, old_colonne = tank.ligne, tank.colonne
+    local old_x, old_y = tank.x, tank.y
+
+    -- Calcul la position du tank en ligne/colonne
+    tank.colonne = math.floor((tank.X + imgPlayer:getWidth() / 2) / TILE_WIDTH) + 1
+    tank.ligne = math.floor((tank.Y + imgPlayer:getHeight() / 2) / TILE_HEIGHT) + 1
+    -- Application function
+    DetecteSol()
+    if tank.sol == 3 then
+        tank.x = old_x
+        tank.y = old_y
     end
 
 -- Gestion Tir de Visée
@@ -258,6 +287,11 @@ function love.draw()
       end
     end
   end
+  -- FAUT CLEAN CE CODE
+  local x = love.mouse.getX()
+  local y = love.mouse.getY()
+  local c = math.floor(x / TILE_WIDTH) + 1
+  local l = math.floor(y / TILE_HEIGHT) + 1
 
 -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
@@ -304,16 +338,29 @@ function love.draw()
         love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
         love.graphics.print("Valeur Angle : " .. tostring(tank.focus), 0, (15 * 3))
         love.graphics.print("Nb de projectiles : " .. tostring(#projectiles), 0, (15 * 4))
-        love.graphics.print("X.Tank : " .. tostring(imgFocus:getWidth() / 4), 0, (15 * 5))
-        love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
+        love.graphics.print("X.Tank : " .. tostring(focus.X - (focus.taille / 2)), 0, (15 * 5))
+        love.graphics.print("Y.Tank : " .. tostring(focus.Y - (focus.taille / 2)), 0, (15 * 6))
         love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
         love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
+        love.graphics.print("Valeur Grille X : " .. tostring(tank.colonne), 0, (15 * 9))
+        love.graphics.print("Valeur Grille Y : " .. tostring(tank.ligne), 0, (15 * 10))
         -- Affichage à droite
         love.graphics.print("Largeur écran : " .. tostring(screenLargeur), screenLargeur - 123, (15 * 0))
         love.graphics.print("Hauteur écran : " .. tostring(screenHauteur), screenLargeur - 125, (15 * 1))
         love.graphics.print("Nb de tuile_X : " .. tostring(MAP_WIDTH), screenLargeur - 110, (15 * 2))
         love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
         love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
+        -- FAUT CLEAN CE CODE
+        if l>0 and c>0 and l <= MAP_HEIGHT and c <= MAP_WIDTH then
+            local id = Game.Map[l][c]
+            
+            love.graphics.print(
+            "Ligne: "..tostring(l)..
+            " Colonne: "..tostring(c)..
+            " ID: "..tostring(id)..
+            " ("..tostring(Game.TileType[id])..")"
+            , 0, (15 * 11))
+        end
     end
     
     -- Afficher la grille pour debug
