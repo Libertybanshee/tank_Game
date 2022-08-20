@@ -16,27 +16,36 @@ function distance(x1, y1, x2, y2)
 end
 
 -- Création MAP / drawn ligne 207
-local Game = {}
-local MAP_WIDTH = 10
-local MAP_HEIGHT = 10
-local TILE_WIDTH = 32
-local TILE_HEIGHT = 32
+local MAP_LARGEUR = 25
+local MAP_HAUTEUR = 19
+local TILE_LARGEUR = 32
+local TILE_HAUTEUR = 32
+local map = {}
+local map = {
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+    {1,1,2,3,1,2,1,1,1,1},
+}
 
-Game.Map = {}
-Game.Map =  {
-              { 3,2,2,2,2,2,2,2,2,3 },
-              { 2,1,2,2,0,0,2,2,1,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,5,2,2,2,2,2,2,2,2 },
-              { 2,2,2,2,3,3,2,2,2,2 },
-              { 2,2,2,2,3,3,2,2,2,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,1,2,2,2,2,2,2,1,2 },
-              { 3,2,2,2,2,2,2,2,2,3 },
-            }
+-- Une table/list pour les images du terrain
+local imgMap = {}
 
-Game.TileTextures = {}
+-- Valeur a modifier 
+
+    for ligne = 1, MAP_HAUTEUR do
+        map[ligne] = {}
+        for colonne = 1, MAP_LARGEUR do
+        map[ligne][colonne] = nil
+        end
+    end
+
 
 -- Cadre de Visée 
 local focus = {}
@@ -116,10 +125,10 @@ function love.load()
     imgEnnemi_1 = love.graphics.newImage("img/Ennemi/tank_Bleu1.png")
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
 
-    Game.TileTextures[0] = nil
-    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/dirt.png")
-    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass.png")
-    Game.TileTextures[3] = love.graphics.newImage("img/Terrain/sand.png")
+    imgMap[0] = love.graphics.newImage("img/Terrain/dirt.png")
+    imgMap[1] = love.graphics.newImage("img/Terrain/dirt.png")
+    imgMap[2] = love.graphics.newImage("img/Terrain/grass.png")
+    imgMap[3] = love.graphics.newImage("img/Terrain/sand.png")
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -233,17 +242,15 @@ end
 
 function love.draw()
 -- Essaie Map
-  local c,l
-  
-  for l=1,MAP_HEIGHT do
-    for c=1,MAP_WIDTH do
-      local id = Game.Map[l][c]
-      local tex = Game.TileTextures[id]
-      if tex ~= nil then
-        love.graphics.draw(tex, (c-1)*TILE_WIDTH, (l-1)*TILE_HEIGHT)
+    for ligne = 1, MAP_HAUTEUR do
+      for colonne = 1, MAP_LARGEUR do
+        local id = map[ligne][colonne]
+        local texture = imgMap[id]
+        if texture ~= nil then
+          love.graphics.draw(texture, (colonne - 1) * TILE_LARGEUR, (ligne - 1) * TILE_HAUTEUR)
+        end
       end
     end
-  end
 
 -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)

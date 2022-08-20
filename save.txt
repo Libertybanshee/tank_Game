@@ -17,14 +17,14 @@ end
 
 -- Création MAP / drawn ligne 207
 local Game = {}
-local MAP_WIDTH = 10
-local MAP_HEIGHT = 10
+local MAP_WIDTH = 25
+local MAP_HEIGHT = 19
 local TILE_WIDTH = 32
 local TILE_HEIGHT = 32
 
 Game.Map = {}
 Game.Map =  {
-              { 3,2,2,2,2,2,2,2,2,3 },
+              { 2,4,4,2,2,2,2,2,2,2 },
               { 2,1,2,2,0,0,2,2,1,2 },
               { 2,2,2,2,2,2,2,2,2,2 },
               { 2,5,2,2,2,2,2,2,2,2 },
@@ -33,7 +33,7 @@ Game.Map =  {
               { 2,2,2,2,2,2,2,2,2,2 },
               { 2,2,2,2,2,2,2,2,2,2 },
               { 2,1,2,2,2,2,2,2,1,2 },
-              { 3,2,2,2,2,2,2,2,2,3 },
+              { 2,2,2,2,2,2,2,2,2,2 },
             }
 
 Game.TileTextures = {}
@@ -118,7 +118,7 @@ function love.load()
 
     Game.TileTextures[0] = nil
     Game.TileTextures[1] = love.graphics.newImage("img/Terrain/dirt.png")
-    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass.png")
+    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/dirt.png")
     Game.TileTextures[3] = love.graphics.newImage("img/Terrain/sand.png")
 
 -- Apparation des Ennemi
