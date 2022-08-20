@@ -17,23 +17,28 @@ end
 
 -- Création MAP / drawn ligne 207
 local Game = {}
-local MAP_WIDTH = 10
-local MAP_HEIGHT = 10
-local TILE_WIDTH = 32
-local TILE_HEIGHT = 32
+local MAP_WIDTH = 20
+local MAP_HEIGHT = 15
+local TILE_WIDTH = 40
+local TILE_HEIGHT = 40
 
 Game.Map = {}
 Game.Map =  {
-              { 3,2,2,2,2,2,2,2,2,3 },
-              { 2,1,2,2,0,0,2,2,1,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,5,2,2,2,2,2,2,2,2 },
-              { 2,2,2,2,3,3,2,2,2,2 },
-              { 2,2,2,2,3,3,2,2,2,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,2,2,2,2,2,2,2,2,2 },
-              { 2,1,2,2,2,2,2,2,1,2 },
-              { 3,2,2,2,2,2,2,2,2,3 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
+              { 2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2 },
             }
 
 Game.TileTextures = {}
@@ -117,9 +122,8 @@ function love.load()
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
 
     Game.TileTextures[0] = nil
-    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/dirt.png")
-    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass.png")
-    Game.TileTextures[3] = love.graphics.newImage("img/Terrain/sand.png")
+    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/road_1.png")
+    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass_1.png")
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -233,7 +237,7 @@ end
 
 function love.draw()
 -- Essaie Map
-  local c,l
+  c,l = nil
   
   for l=1,MAP_HEIGHT do
     for c=1,MAP_WIDTH do
@@ -294,8 +298,12 @@ function love.draw()
         love.graphics.print("Y.Tank : " .. tostring(imgFocus:getHeight() / 2), 0, (15 * 6))
         love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
         love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
+        -- Affichage à droite
         love.graphics.print("Largeur écran : " .. tostring(screenLargeur), screenLargeur - 123, (15 * 0))
         love.graphics.print("Hauteur écran : " .. tostring(screenHauteur), screenLargeur - 125, (15 * 1))
+        love.graphics.print("Nb de tuile_X : " .. tostring(MAP_WIDTH), screenLargeur - 110, (15 * 2))
+        love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
+        love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
     end
 end
 
@@ -322,7 +330,7 @@ function love.keypressed(key)
     if love.keyboard.isDown("f1") then
         debug = not debug
     end  
-
+    -- Méthode 2
     if love.keyboard.isDown("f2") then
         if debug == true then 
             debug = false
