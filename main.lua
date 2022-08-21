@@ -9,6 +9,7 @@ io.stdout:setvbuf("no")
 -- Variable d'essai Coding
 SST = 0
 SSC = 0
+idT = nil
 
 -- Algo impact elements
 function distance(x1, y1, x2, y2)
@@ -212,13 +213,21 @@ function love.update(dt)
         tank.Y = tank.Y - (tank.Speed * ratio_Y)
     end
 
+    -- Gestion collision déplacementcolonne
+    local old_X, old_Y = tank.X, tank.Y
+    print(idT)
+    if Collision(idT) then
+        print("Collision")
+        tank.X = old_X
+        tank.Y = old_Y 
+    end
+
 -- Prérequis collision / enregistrer les anciennes valeurs
-    local old_ligne, old_colonne = tank.ligne, tank.colonne
-    local old_x, old_y = tank.x, tank.y
+    local old_ligne, old_colonne = tank.ligne, tank
 
     -- Calcul la position du tank en ligne/colonne
-    tank.colonne = math.floor((tank.X + imgPlayer:getWidth() / 2) / TILE_WIDTH) + 1
-    tank.ligne = math.floor((tank.Y + imgPlayer:getHeight() / 2) / TILE_HEIGHT) + 1
+    tank.colonne = math.floor(tank.X / TILE_WIDTH) + 1
+    tank.ligne = math.floor(tank.Y / TILE_HEIGHT) + 1
     -- Application function
     -- DetecteSol()
     --if tank.sol == 3 then
@@ -312,7 +321,7 @@ function love.draw()
     end    
     -- Texte Tir Chargé * goal.hit == false est ajouté pour évité la supersition du texte GOOD !!*
     if mouseR and goal.hit == false then
-        love.graphics.print(timer, tank.X - 8, tank.Y - 55, 0, 2, 2)
+        love.graphics.print(math.floor(timer), tank.X - 8, tank.Y - 55, 0, 2, 2)
         if mouseR and timer == 4 then
             love.graphics.print("BOUM !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
         end
