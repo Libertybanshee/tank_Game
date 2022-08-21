@@ -3,3 +3,7 @@
 2 - Au dessus du tank, affichez un chiffre un chiffre après la virgule du timer
 
 3 - Debug de la grille mal paramètrés
+
+4 - Modifier les couleur des love.graphics.print()
+
+5 - Polish les Collisions décors

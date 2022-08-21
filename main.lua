@@ -25,20 +25,20 @@ local map
 
 Game.Map = {}
 Game.Map =  {
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1 },
+              { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
+              { 1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,0 },
+              { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 },
+              { 1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0 },
+              { 1,0,0,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0 },
+              { 1,0,0,0,0,1,1,1,0,1,1,0,0,0,0,1,0,0,1,1 },
+              { 1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,0,0,0,1 },
+              { 1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0 },
+              { 1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,1 },
+              { 1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1 },
+              { 1,0,0,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0 },
+              { 1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0 },
+              { 1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0 },
+              { 1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1 },
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
             }
 
@@ -82,6 +82,7 @@ tank.sol = 0
 -- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
 debug_Grille = false
+debug_Tile = false
 
 -- Raccourcie clavier (Non utilisé)
 leftMouse = "Off"
@@ -167,8 +168,10 @@ function love.load()
 
 -- Destination Trajet / Draw ligne 203 / Load ligne 180 / Update ligne 180
           goal = {}
-          goal.X = screenLargeur / 2
-          goal.Y = screenHauteur / 2
+          goal.X = 40
+          goal.Y = 40
+          goal.nbX = 18
+          goal.nbY = 10
           goal.taille = 40
           goal.hit = false
 end
@@ -191,11 +194,11 @@ function love.update(dt)
 -- Déplacer Tank Player
     -- Tourner a gauche
     if pressQ and pressZ or pressD and pressS then
-        tank.angle = tank.angle - 0.02
+        tank.angle = tank.angle - 0.05
     end
     -- Tourner a droite
     if pressD and pressZ or pressQ and pressS then
-        tank.angle = tank.angle + 0.02
+        tank.angle = tank.angle + 0.05
     end
     -- Avancer
     if pressZ then
@@ -217,9 +220,11 @@ function love.update(dt)
     tank.ligne = math.floor((tank.Y + 20) / TILE_HEIGHT) + 1
     Collision()
     if tank.sol == 1 then
-        print("MUR")
+       -- print("MUR")
         tank.X = old_X
         tank.Y = old_Y
+    else
+       -- print("RAS")
     end
 
 -- Gestion Tir de Visée
@@ -261,7 +266,7 @@ function love.update(dt)
     end
 
 -- Condition de victoire par destination / load 1igne 116 / Draw ligne 202 
-    if distance(tank.X, tank.Y, goal.X, goal.Y) < 20 then
+    if distance(tank.X, tank.Y, (goal.X * goal.nbX), (goal.Y * goal.nbY)) < 20 then
         goal.hit = true
     end
 
@@ -319,8 +324,8 @@ function love.draw()
     love.graphics.rectangle("line", spawnPlayer.X, spawnPlayer.Y, spawnPlayer.taille, spawnPlayer.taille)
 
 -- Destination Trajet / load 1igne 116 / Update ligne 180
-    love.graphics.print( "FINISH", goal.X - 10, goal.Y - 25 , 0, 1.5, 1.5)
-    love.graphics.rectangle( "line", goal.X, goal.Y, goal.taille, goal.taille)
+    love.graphics.print( "FINISH", (goal.X * goal.nbX) - 10,(goal.Y * goal.nbY) - 25 , 0, 1.5, 1.5)
+    love.graphics.rectangle( "line", (goal.X * goal.nbX), (goal.Y * goal.nbY), goal.taille, goal.taille)
     if goal.hit == true then
         love.graphics.print("GOOD !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
     end
@@ -374,10 +379,23 @@ function love.draw()
     -- Afficher la grille pour debug
     if debug_Grille == true then
         for nbLigne_V = 1, MAP_WIDTH do
-            love.graphics.line((nbLigne_V * 40), 0, (nbLigne_V * 40), 600)
+            love.graphics.line((nbLigne_V * TILE_WIDTH), 0, (nbLigne_V * TILE_WIDTH), 600)
         end
         for nbLigne_H = 1, MAP_HEIGHT do
-            love.graphics.line( 0, (nbLigne_H * 40), 800, (nbLigne_H * 40))
+            love.graphics.line( 0, (nbLigne_H * TILE_HEIGHT), 800, (nbLigne_H * TILE_HEIGHT))
+        end
+    end
+
+    if debug_Tile == true then 
+        cD,lD = nil  
+        for lD=1,MAP_HEIGHT do
+          for cD=1,MAP_WIDTH do
+            local idD = Game.Map[lD][cD]
+            local texD = idD
+            if texD == 1 then
+              love.graphics.rectangle("fill", (cD-1)*TILE_WIDTH, (lD-1)*TILE_HEIGHT, 40, 40)
+            end
+          end
         end
     end
 end
@@ -412,5 +430,9 @@ function love.keypressed(key)
         else 
             debug_Grille = true
         end
+    end
+
+    if love.keyboard.isDown("f3") then
+        debug_Tile = not debug_Tile
     end
 end
