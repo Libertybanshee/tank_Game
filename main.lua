@@ -158,13 +158,13 @@ function love.load()
     southEast = math.pi / 2
     south = math.pi / 2
     southWest = 4.5
-    west = - math.pi / 0.5
+    west =  - 3.15
     -- fonction + legende des paramètres ligne 67 / Draw ligne 153
-    SpanwEnnemi(280, 100, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(330, 100, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(380, 100, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(430, 100, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(480, 100, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(100, 180, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(460, 100, east, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(540, 255, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(780, 140, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(700, 420, west, 0.225, 0, imgEnnemi_1)
 
 -- Destination Trajet / Draw ligne 203 / Load ligne 180 / Update ligne 180
           goal = {}

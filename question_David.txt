@@ -7,3 +7,5 @@
 4 - Modifier les couleur des love.graphics.print()
 
 5 - Polish les Collisions décors
+
+6 - projectile contre le décors
