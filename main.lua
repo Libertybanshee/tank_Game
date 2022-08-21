@@ -9,7 +9,6 @@ io.stdout:setvbuf("no")
 -- Variable d'essai Coding
 SST = 0
 SSC = 0
-idT = nil
 
 -- Algo impact elements
 function distance(x1, y1, x2, y2)
@@ -39,8 +38,8 @@ Game.Map =  {
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
               { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-              { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+              { 0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1 },
+              { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
             }
 
 Game.TileTextures = {}
@@ -63,8 +62,8 @@ screenHauteur = love.graphics:getHeight()
 
 local spawnPlayer = {}
 spawnPlayer.taille = 40
-spawnPlayer.X = screenLargeur / 2 - spawnPlayer.taille
-spawnPlayer.Y = screenHauteur / 1.05 - spawnPlayer.taille
+spawnPlayer.X = (10 * 40) - spawnPlayer.taille
+spawnPlayer.Y = (14 * 40) - spawnPlayer.taille
 spawnPlayer.angle = - math.pi / 2
 
 -- Player Value / update ligne 117 / Draw ligne 173
@@ -120,10 +119,7 @@ end
 
 -- Détecte la colision
 function Collision(pID)
-    local tileType = Game.TileType[pID]
-    if tileType == "1" then
-        return true
-    end 
+    tank.sol = Game.Map[tank.ligne][tank.colonne]
 end
 
 
@@ -138,7 +134,7 @@ function love.load()
 
     -- Terrain par tuile
     Game.TileTextures[0] = nil
-    Game.TileTextures[1] = love.graphics.newImage("img/Terrain/road_0.png")
+    Game.TileTextures[1] = nil
     Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass_1.png")
     Game.TileTextures[3] = love.graphics.newImage("img/Terrain/road_2.png")
     Game.TileTextures[4] = love.graphics.newImage("img/Terrain/road_3.png")
@@ -188,6 +184,9 @@ function love.update(dt)
     pressS = love.keyboard.isDown("s")
     pressQ = love.keyboard.isDown("q")
     pressSpace = love.keyboard.isDown("space")
+    
+-- Prérequis collision / enregistrer les anciennes valeurs
+    old_X, old_Y = tank.X, tank.Y 
 
 -- Déplacer Tank Player
     -- Tourner a gauche
@@ -213,27 +212,15 @@ function love.update(dt)
         tank.Y = tank.Y - (tank.Speed * ratio_Y)
     end
 
-    -- Gestion collision déplacementcolonne
-    local old_X, old_Y = tank.X, tank.Y
-    print(idT)
-    if Collision(idT) then
-        print("Collision")
-        tank.X = old_X
-        tank.Y = old_Y 
-    end
-
--- Prérequis collision / enregistrer les anciennes valeurs
-    local old_ligne, old_colonne = tank.ligne, tank
-
     -- Calcul la position du tank en ligne/colonne
-    tank.colonne = math.floor(tank.X / TILE_WIDTH) + 1
-    tank.ligne = math.floor(tank.Y / TILE_HEIGHT) + 1
-    -- Application function
-    -- DetecteSol()
-    --if tank.sol == 3 then
-     --   tank.x = old_x
-      --  tank.y = old_y
-    --end
+    tank.colonne = math.floor((tank.X - 20) / TILE_WIDTH) + 1
+    tank.ligne = math.floor((tank.Y + 20) / TILE_HEIGHT) + 1
+    Collision()
+    if tank.sol == 1 then
+        print("MUR")
+        tank.X = old_X
+        tank.Y = old_Y
+    end
 
 -- Gestion Tir de Visée
     focus.X, focus.Y = love.mouse.getPosition()
