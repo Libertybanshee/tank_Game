@@ -117,8 +117,8 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
     table.insert(ennemis, ennemi)
 end
 
--- Détecte le sol sous le tank et le mémorise dans tank.sol
-function DetecteSol()
+-- Détecte la colision
+function Collision()
     
 end
 
@@ -217,11 +217,11 @@ function love.update(dt)
     tank.colonne = math.floor((tank.X + imgPlayer:getWidth() / 2) / TILE_WIDTH) + 1
     tank.ligne = math.floor((tank.Y + imgPlayer:getHeight() / 2) / TILE_HEIGHT) + 1
     -- Application function
-    DetecteSol()
-    if tank.sol == 3 then
-        tank.x = old_x
-        tank.y = old_y
-    end
+    -- DetecteSol()
+    --if tank.sol == 3 then
+     --   tank.x = old_x
+      --  tank.y = old_y
+    --end
 
 -- Gestion Tir de Visée
     focus.X, focus.Y = love.mouse.getPosition()
@@ -287,11 +287,6 @@ function love.draw()
       end
     end
   end
-  -- FAUT CLEAN CE CODE
-  local x = love.mouse.getX()
-  local y = love.mouse.getY()
-  local c = math.floor(x / TILE_WIDTH) + 1
-  local l = math.floor(y / TILE_HEIGHT) + 1
 
 -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
@@ -344,22 +339,24 @@ function love.draw()
         love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
         love.graphics.print("Valeur Grille X : " .. tostring(tank.colonne), 0, (15 * 9))
         love.graphics.print("Valeur Grille Y : " .. tostring(tank.ligne), 0, (15 * 10))
+
         -- Affichage à droite
         love.graphics.print("Largeur écran : " .. tostring(screenLargeur), screenLargeur - 123, (15 * 0))
         love.graphics.print("Hauteur écran : " .. tostring(screenHauteur), screenLargeur - 125, (15 * 1))
         love.graphics.print("Nb de tuile_X : " .. tostring(MAP_WIDTH), screenLargeur - 110, (15 * 2))
         love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
         love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
-        -- FAUT CLEAN CE CODE
-        if l>0 and c>0 and l <= MAP_HEIGHT and c <= MAP_WIDTH then
-            local id = Game.Map[l][c]
-            
-            love.graphics.print(
-            "Ligne: "..tostring(l)..
-            " Colonne: "..tostring(c)..
-            " ID: "..tostring(id)..
-            " ("..tostring(Game.TileType[id])..")"
-            , 0, (15 * 11))
+
+        -- Affichage position de la souris sur le grille
+        local mX = love.mouse.getX()
+        local mY = love.mouse.getY()
+        local cM = math.floor(mX / TILE_WIDTH) + 1
+        local lM = math.floor(mY / TILE_HEIGHT) + 1
+        if lM > 0 and cM> 0 and lM <= MAP_HEIGHT and cM<= MAP_WIDTH then
+            local id = Game.Map[lM][cM]
+            love.graphics.print("Ligne souris: " .. tostring(lM), 0, (15 * 11))
+            love.graphics.print("Colonne souris: " .. tostring(cM), 0, (15 * 12))
+            love.graphics.print("Case ID souris: "..tostring(id), 0, (15 * 13))
         end
     end
     
