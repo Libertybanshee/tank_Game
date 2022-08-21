@@ -118,8 +118,11 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
 end
 
 -- Détecte la colision
-function Collision()
-    
+function Collision(pID)
+    local tileType = Game.TileType[pID]
+    if tileType == "1" then
+        return true
+    end 
 end
 
 
@@ -347,16 +350,28 @@ function love.draw()
         love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
         love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
 
-        -- Affichage position de la souris sur le grille
+        -- Affichage position de la souris sur la grille
         local mX = love.mouse.getX()
         local mY = love.mouse.getY()
         local cM = math.floor(mX / TILE_WIDTH) + 1
         local lM = math.floor(mY / TILE_HEIGHT) + 1
         if lM > 0 and cM> 0 and lM <= MAP_HEIGHT and cM<= MAP_WIDTH then
-            local id = Game.Map[lM][cM]
+            local idM = Game.Map[lM][cM]
             love.graphics.print("Ligne souris: " .. tostring(lM), 0, (15 * 11))
             love.graphics.print("Colonne souris: " .. tostring(cM), 0, (15 * 12))
-            love.graphics.print("Case ID souris: "..tostring(id), 0, (15 * 13))
+            love.graphics.print("Case ID souris: "..tostring(idM), 0, (15 * 13))
+        end
+
+        -- Affichage position de Player sur la grille
+        local tX = tank.X
+        local tY = tank.Y
+        local cT = math.floor(tX / TILE_WIDTH) + 1
+        local lT = math.floor(tY / TILE_HEIGHT) + 1
+        if lT > 0 and cT> 0 and lT <= MAP_HEIGHT and cT<= MAP_WIDTH then
+            local idT = Game.Map[lT][cT]
+            love.graphics.print("Ligne Tank: " .. tostring(lT), 0, (15 * 14))
+            love.graphics.print("Colonne Tank: " .. tostring(cT), 0, (15 * 15))
+            love.graphics.print("Case ID Tank: "..tostring(idT), 0, (15 * 16))
         end
     end
     
