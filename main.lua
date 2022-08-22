@@ -24,17 +24,17 @@ MAP = {}
 MAP =  {
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
               { 1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,0 },
-              { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 },
-              { 1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0 },
+              { 1,0,0,0,2,2,0,0,0,0,2,0,0,0,0,1,0,0,0,2 },
+              { 1,2,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,2,0 },
               { 1,0,0,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0 },
-              { 1,0,0,0,0,1,1,1,0,1,1,0,0,0,0,1,0,0,1,1 },
-              { 1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,0,0,0,1 },
-              { 1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0 },
-              { 1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,1 },
-              { 1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1 },
+              { 1,0,0,0,0,1,1,1,2,1,1,0,0,0,0,1,0,0,1,1 },
+              { 1,2,0,2,0,1,1,1,1,1,1,2,0,0,0,1,0,0,0,1 },
+              { 1,2,2,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0 },
+              { 1,2,0,2,0,0,1,0,0,2,1,1,0,0,0,0,1,0,2,1 },
+              { 1,0,0,0,2,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1 },
               { 1,0,0,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0 },
               { 1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0 },
-              { 1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0 },
+              { 1,2,0,2,2,0,0,0,0,0,2,1,0,0,2,0,1,0,0,0 },
               { 1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1 },
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
             }
@@ -148,7 +148,7 @@ function love.load()
     -- Terrain par tuile
     MAP.Sprite_MAP[0] = nil
     MAP.Sprite_MAP[1] = nil
-    MAP.Sprite_MAP[2] = love.graphics.newImage("img/Terrain/grass_1.png")
+    MAP.Sprite_MAP[2] = nil
     MAP.Sprite_MAP[3] = love.graphics.newImage("img/Terrain/road_2.png")
     MAP.Sprite_MAP[4] = love.graphics.newImage("img/Terrain/road_3.png")
     MAP.Sprite_MAP[5] = love.graphics.newImage("img/Terrain/road_4.png")
@@ -322,17 +322,23 @@ function love.draw()
       end
     end
   end
-
--- Afficher le tank player -> paramètre ligne 30 / update 117
+  -- ESSAIE TRANSPARANCE
+  if tank.map == 2 then
+    print("MUR")
+    love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2)
+  else
+    -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
+    
+    -- Afficher Tourelle -> paramètre ligne 30
+        love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2, imgFocus:getWidth() / 4, imgFocus:getHeight() / 2)
+  end
+
 
 -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
     for j, ennemi in ipairs(ennemis) do
         love.graphics.draw(ennemi.img, ennemi.X, ennemi.Y, ennemi.angle, ennemi.taille, ennemi.taille, ennemi.img:getWidth() / 2, ennemi.img:getHeight() / 2)
     end
-
--- Afficher Tourelle -> paramètre ligne 30
-    love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2, imgFocus:getWidth() / 4, imgFocus:getHeight() / 2)
 
 -- Afficher la Visée -> paramètre ligne 12
     -- love.graphics.rectangle("line", focus.X - (focus.taille / 2), focus.Y - (focus.taille / 2), focus.taille, focus.taille) ANCIENNE VISÉE
