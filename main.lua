@@ -18,6 +18,7 @@ local MAP_LARGEUR = 20
 local MAP_HAUTEUR = 15
 local TILE_LARGEUR = 40
 local TILE_HAUTEUR = 40
+local TILE_T = 40
 
 MAP = {}
 MAP =  {
@@ -78,6 +79,7 @@ tank.map = 0
 debug = false
 debug_Grille = false
 debug_Tile = false
+debug_Bloc = false
 
 -- Raccourcie clavier (Non utilisé)
 leftMouse = "Off"
@@ -118,8 +120,8 @@ end
 
 -- liste bloc / *pour gérer les colision avec la map, les projecile étant dans une fonction, on ne peut pas se position sur la variable MAP*
     local obstacles = {}
--- fonction Obstacle / Call ligne
-function Obstacle(pObsX, pObsY, pObsTL, pObsTH)
+-- fonction Obstacle / Call ligne 163 / draw ligne 434
+function SpanwObstacle(pObsX, pObsY, pObsTL, pObsTH)
     local obstacle = {}
           obstacle.X = pObsX
           obstacle.Y = pObsY
@@ -159,8 +161,75 @@ function love.load()
         print("COLISION")
     end
 
--- Obstacle pour les projectiles
-    Obstacle(100, 200, 40, 40)
+-- Obstacle pour les projectiles / create ligne 122 / draw ligne 434
+    SpanwObstacle((2 * TILE_T), (1 * TILE_T), 40, 40)
+    SpanwObstacle((3 * TILE_T), (1 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (1 * TILE_T), 40, 40)
+    SpanwObstacle((8 * TILE_T), (1 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((4 * TILE_T), (3 * TILE_T), 40, 40)
+    SpanwObstacle((5 * TILE_T), (3 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (3 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (3 * TILE_T), 40, 40)
+    SpanwObstacle((8 * TILE_T), (3 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((4 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((5 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((9 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((10 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((11 * TILE_T), (4 * TILE_T), 40, 40)
+    SpanwObstacle((12 * TILE_T), (4 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((5 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((9 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((10 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((18 * TILE_T), (5 * TILE_T), 40, 40)
+    SpanwObstacle((19 * TILE_T), (5 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((5 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((8 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((9 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((10 * TILE_T), (6 * TILE_T), 40, 40)
+    SpanwObstacle((19 * TILE_T), (6 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((5 * TILE_T), (7 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (7 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (7 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((6 * TILE_T), (8 * TILE_T), 40, 40)
+    SpanwObstacle((10 * TILE_T), (8 * TILE_T), 40, 40)
+    SpanwObstacle((11 * TILE_T), (8 * TILE_T), 40, 40)
+    SpanwObstacle((19 * TILE_T), (8 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((8 * TILE_T), (9 * TILE_T), 40, 40)
+    SpanwObstacle((19 * TILE_T), (9 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((3 * TILE_T), (10 * TILE_T), 40, 40)
+    SpanwObstacle((4 * TILE_T), (10 * TILE_T), 40, 40)
+    SpanwObstacle((5 * TILE_T), (10 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (10 * TILE_T), 40, 40)
+    SpanwObstacle((12 * TILE_T), (10 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((5 * TILE_T), (11 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (11 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (11 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((11 * TILE_T), (12 * TILE_T), 40, 40)
+    -- Ligne suivante
+    SpanwObstacle((3 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((4 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((5 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((6 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((7 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((10 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((11 * TILE_T), (13 * TILE_T), 40, 40)
+    SpanwObstacle((19 * TILE_T), (13 * TILE_T), 40, 40)
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -267,11 +336,12 @@ function love.update(dt)
     -- Parcours de la liste des ennemis
     for n = #ennemis, 1, -1 do
         local ennemiG = ennemis[n]
+        local ennemiT = 30
         -- Parcours de la liste des projectiles
         for k = #projectiles, 1, -1 do
             local projectileG = projectiles[k]
             -- Suppression de l'ennemi après un impact de projectile
-            if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < 10 then
+            if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < ennemiT then
                 table.remove(ennemis, n)
                 table.remove(projectiles, k)
             end
@@ -282,11 +352,12 @@ function love.update(dt)
     -- Parcours de la liste des Obstacle
     for nbO = #obstacles, 1, -1 do
         local obstacleG = obstacles[nbO]
+        local obstacleL = 20
         -- Parcours de la liste des projectiles
         for nbk = #projectiles, 1, -1 do
             local projectileG = projectiles[nbk]
             -- Suppression de l'ennemi après un impact de projectile
-            if distance(projectileG.X, projectileG.Y, obstacleG.X, obstacleG.Y) < 10 then
+            if distance(projectileG.X, projectileG.Y, obstacleG.X, obstacleG.Y) < obstacleL then
                 table.remove(projectiles, nbk)
             end
         end
@@ -318,10 +389,6 @@ function love.draw()
       end
     end
   end
-  -- Afficher les obstacles  obstacle.X
-    for i, obstacle in ipairs(obstacles) do
-        love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
-    end
 
 -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)
@@ -409,15 +476,20 @@ function love.draw()
     
     -- Afficher la grille pour debug
     if debug_Grille == true then
+        love.graphics.print("DEBUG GRILLE : ACTIVÉ", (screenLargeur / 2) - 120, 50, 0, 1.5, 1.5)
         for nbLigne_V = 1, MAP_LARGEUR do
+            love.graphics.print(nbLigne_V - 1, (nbLigne_V * 40) - 40, 0, 0, 1, 1)
             love.graphics.line((nbLigne_V * TILE_LARGEUR), 0, (nbLigne_V * TILE_LARGEUR), 600)
         end
         for nbLigne_H = 1, MAP_HAUTEUR do
+            love.graphics.print(nbLigne_H - 1, 0, (nbLigne_H * 40) - 40, 0, 1, 1)
             love.graphics.line( 0, (nbLigne_H * TILE_HAUTEUR), 800, (nbLigne_H * TILE_HAUTEUR))
         end
     end
 
+    -- Afficher les collision contre le tank via la grille MAP
     if debug_Tile == true then 
+        love.graphics.print("DEBUG COLLISION : ACTIVÉ", (screenLargeur / 2) - 120, 80, 0, 1.5, 1.5)
         cD,lD = nil  
         for lD=1,MAP_HAUTEUR do
           for cD=1,MAP_LARGEUR do
@@ -427,6 +499,13 @@ function love.draw()
               love.graphics.rectangle("fill", (cD-1)*TILE_LARGEUR, (lD-1)*TILE_HAUTEUR, 40, 40)
             end
           end
+        end
+    end    
+    -- Afficher les obstacles pour debug / Call ligne 163 // create ligne 122 /
+    if debug_Bloc == true then
+        love.graphics.print("DEBUG BLOC PROJECTILE : ACTIVÉ", (screenLargeur / 2) - 150, 90, 0, 1.5, 1.5)
+        for i, obstacle in ipairs(obstacles) do
+            love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
         end
     end
 end
@@ -465,5 +544,9 @@ function love.keypressed(key)
 
     if love.keyboard.isDown("f3") then
         debug_Tile = not debug_Tile
+    end
+
+    if love.keyboard.isDown("f4") then
+        debug_Bloc = not debug_Bloc
     end
 end

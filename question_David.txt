@@ -9,9 +9,12 @@ QUESTION DAVID
 4 - Modifier les couleur des love.graphics.print()
 
 5 - élargir la hitbox des impact des projectile VS ennemi/obstacle
+    actuellemnt hotbix décalé de 20px
 
 A effectuer
 
-5 - Polish les Collisions décors
+1 - Polish les Collisions décors
 
-6 - projectile contre le décors
+2 - projectile contre le décors
+
+3 - Implater les SpawnObstacle + SpawnEnnemi dans un module pour mieux lire le code main.lua
