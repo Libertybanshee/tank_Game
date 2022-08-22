@@ -72,7 +72,7 @@ tank.tourelleX = 0
 tank.tourelleY = 8
 tank.ligne = 1
 tank.colonne = 1
-tank.sol = 0
+tank.map = 0
 
 -- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
@@ -94,6 +94,9 @@ function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)
           projectile.vitesse = pVitesse
           projectile.img = pImg
           projectile.shoot = pShoot
+          projectile.ligne = 1
+          projectile.colonne = 1
+          projectile.map = 0
     table.insert(projectiles, projectile)
 end
 
@@ -113,9 +116,21 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
     table.insert(ennemis, ennemi)
 end
 
+-- liste bloc / *pour gérer les colision avec la map, les projecile étant dans une fonction, on ne peut pas se position sur la variable MAP*
+    local obstacles = {}
+-- fonction Obstacle / Call ligne
+function Obstacle(pObsX, pObsY, pObsTL, pObsTH)
+    local obstacle = {}
+          obstacle.X = pObsX
+          obstacle.Y = pObsY
+          obstacle.TL = pObsTL
+          obstacle.TH = pObsTH
+    table.insert(obstacles, obstacle)
+end
+
 -- Détecte la colision
 function Collision(pID)
-    tank.sol = MAP[tank.ligne][tank.colonne]
+    tank.map = MAP[tank.ligne][tank.colonne]
 end
 
 
@@ -143,6 +158,9 @@ function love.load()
     if distance(tank.X, tank.Y, 180, 540) < 20 then
         print("COLISION")
     end
+
+-- Obstacle pour les projectiles
+    Obstacle(100, 200, 40, 40)
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -214,7 +232,7 @@ function love.update(dt)
     tank.colonne = math.floor((tank.X - 20) / TILE_LARGEUR) + 1
     tank.ligne = math.floor((tank.Y + 20) / TILE_HAUTEUR) + 1
     Collision()
-    if tank.sol == 1 then
+    if tank.map == 1 then
        -- print("MUR")
         tank.X = old_X
         tank.Y = old_Y
@@ -260,6 +278,20 @@ function love.update(dt)
         end
     end
 
+-- Gestion des Obstacles projectiles / create list at ligne 121
+    -- Parcours de la liste des Obstacle
+    for nbO = #obstacles, 1, -1 do
+        local obstacleG = obstacles[nbO]
+        -- Parcours de la liste des projectiles
+        for nbk = #projectiles, 1, -1 do
+            local projectileG = projectiles[nbk]
+            -- Suppression de l'ennemi après un impact de projectile
+            if distance(projectileG.X, projectileG.Y, obstacleG.X, obstacleG.Y) < 10 then
+                table.remove(projectiles, nbk)
+            end
+        end
+    end
+
 -- Condition de victoire par destination / load 1igne 116 / Draw ligne 202 
     if distance(tank.X, tank.Y, (goal.X * goal.nbX), (goal.Y * goal.nbY)) < 20 then
         goal.hit = true
@@ -286,6 +318,10 @@ function love.draw()
       end
     end
   end
+  -- Afficher les obstacles  obstacle.X
+    for i, obstacle in ipairs(obstacles) do
+        love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
+    end
 
 -- Afficher le tank player -> paramètre ligne 30 / update 117
     love.graphics.draw(imgPlayer, tank.X, tank.Y, tank.angle, 0.2, 0.2, imgPlayer:getWidth() / 2, imgPlayer:getHeight() / 2)

@@ -1,3 +1,5 @@
+QUESTION DAVID
+
 1 - Au dessus du tank, résoudre la supersition du texte "timer" et "BOUM !!" 
 
 2 - Au dessus du tank, affichez un chiffre un chiffre après la virgule du timer
@@ -5,6 +7,10 @@
 3 - Debug de la grille mal paramètrés
 
 4 - Modifier les couleur des love.graphics.print()
+
+5 - élargir la hitbox des impact des projectile VS ennemi/obstacle
+
+A effectuer
 
 5 - Polish les Collisions décors
 
