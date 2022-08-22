@@ -8,7 +8,7 @@ QUESTION DAVID
 
 4 - Modifier les couleur des love.graphics.print()
 
-5 - élargir la hitbox des impact des projectile VS ennemi/obstacle
+5 - élargir la hitbox des impact des projectile VS ennemi/obstacle ->> ligne 280
     actuellemnt hotbix décalé de 20px
 
 A effectuer

@@ -18,7 +18,7 @@ local MAP_LARGEUR = 20
 local MAP_HAUTEUR = 15
 local TILE_LARGEUR = 40
 local TILE_HAUTEUR = 40
-local TILE_T = 40
+TILE_T = 40
 
 MAP = {}
 MAP =  {
@@ -161,75 +161,8 @@ function love.load()
         print("COLISION")
     end
 
--- Obstacle pour les projectiles / create ligne 122 / draw ligne 434
-    SpanwObstacle((2 * TILE_T), (1 * TILE_T), 40, 40)
-    SpanwObstacle((3 * TILE_T), (1 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (1 * TILE_T), 40, 40)
-    SpanwObstacle((8 * TILE_T), (1 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((4 * TILE_T), (3 * TILE_T), 40, 40)
-    SpanwObstacle((5 * TILE_T), (3 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (3 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (3 * TILE_T), 40, 40)
-    SpanwObstacle((8 * TILE_T), (3 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((4 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((5 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((9 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((10 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((11 * TILE_T), (4 * TILE_T), 40, 40)
-    SpanwObstacle((12 * TILE_T), (4 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((5 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((9 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((10 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((18 * TILE_T), (5 * TILE_T), 40, 40)
-    SpanwObstacle((19 * TILE_T), (5 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((5 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((8 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((9 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((10 * TILE_T), (6 * TILE_T), 40, 40)
-    SpanwObstacle((19 * TILE_T), (6 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((5 * TILE_T), (7 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (7 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (7 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((6 * TILE_T), (8 * TILE_T), 40, 40)
-    SpanwObstacle((10 * TILE_T), (8 * TILE_T), 40, 40)
-    SpanwObstacle((11 * TILE_T), (8 * TILE_T), 40, 40)
-    SpanwObstacle((19 * TILE_T), (8 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((8 * TILE_T), (9 * TILE_T), 40, 40)
-    SpanwObstacle((19 * TILE_T), (9 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((3 * TILE_T), (10 * TILE_T), 40, 40)
-    SpanwObstacle((4 * TILE_T), (10 * TILE_T), 40, 40)
-    SpanwObstacle((5 * TILE_T), (10 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (10 * TILE_T), 40, 40)
-    SpanwObstacle((12 * TILE_T), (10 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((5 * TILE_T), (11 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (11 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (11 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((11 * TILE_T), (12 * TILE_T), 40, 40)
-    -- Ligne suivante
-    SpanwObstacle((3 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((4 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((5 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((6 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((7 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((10 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((11 * TILE_T), (13 * TILE_T), 40, 40)
-    SpanwObstacle((19 * TILE_T), (13 * TILE_T), 40, 40)
+-- Obstacle pour les projectiles / create ligne 122 / draw ligne 434 / paramètre ligne 288
+    spanwObs = require("spawnObstacle")
 
 -- Apparation des Ennemi
     -- Orientation spawn
@@ -348,11 +281,11 @@ function love.update(dt)
         end
     end
 
--- Gestion des Obstacles projectiles / create list at ligne 121
+-- Gestion des Obstacles projectiles / create list at ligne 121 / call ligne 164
     -- Parcours de la liste des Obstacle
     for nbO = #obstacles, 1, -1 do
         local obstacleG = obstacles[nbO]
-        local obstacleL = 20
+        local obstacleL = 10
         -- Parcours de la liste des projectiles
         for nbk = #projectiles, 1, -1 do
             local projectileG = projectiles[nbk]
