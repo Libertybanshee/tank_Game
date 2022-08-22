@@ -7,8 +7,6 @@ end
 io.stdout:setvbuf("no")
 
 -- Variable d'essai Coding
-SST = 0
-SSC = 0
 
 -- Algo impact elements
 function distance(x1, y1, x2, y2)
@@ -16,15 +14,13 @@ function distance(x1, y1, x2, y2)
 end
 
 -- Création MAP / drawn ligne 207
-local Game = {}
-local MAP_WIDTH = 20
-local MAP_HEIGHT = 15
-local TILE_WIDTH = 40
-local TILE_HEIGHT = 40
-local map
+local MAP_LARGEUR = 20
+local MAP_HAUTEUR = 15
+local TILE_LARGEUR = 40
+local TILE_HAUTEUR = 40
 
-Game.Map = {}
-Game.Map =  {
+MAP = {}
+MAP =  {
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
               { 1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,0 },
               { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0 },
@@ -42,8 +38,7 @@ Game.Map =  {
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
             }
 
-Game.TileTextures = {}
-Game.TileType = {}
+MAP.Sprite_MAP = {}
 
 -- Cadre de Visée 
 local focus = {}
@@ -120,7 +115,7 @@ end
 
 -- Détecte la colision
 function Collision(pID)
-    tank.sol = Game.Map[tank.ligne][tank.colonne]
+    tank.sol = MAP[tank.ligne][tank.colonne]
 end
 
 
@@ -134,12 +129,12 @@ function love.load()
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
 
     -- Terrain par tuile
-    Game.TileTextures[0] = nil
-    Game.TileTextures[1] = nil
-    Game.TileTextures[2] = love.graphics.newImage("img/Terrain/grass_1.png")
-    Game.TileTextures[3] = love.graphics.newImage("img/Terrain/road_2.png")
-    Game.TileTextures[4] = love.graphics.newImage("img/Terrain/road_3.png")
-    Game.TileTextures[5] = love.graphics.newImage("img/Terrain/road_4.png")
+    MAP.Sprite_MAP[0] = nil
+    MAP.Sprite_MAP[1] = nil
+    MAP.Sprite_MAP[2] = love.graphics.newImage("img/Terrain/grass_1.png")
+    MAP.Sprite_MAP[3] = love.graphics.newImage("img/Terrain/road_2.png")
+    MAP.Sprite_MAP[4] = love.graphics.newImage("img/Terrain/road_3.png")
+    MAP.Sprite_MAP[5] = love.graphics.newImage("img/Terrain/road_4.png")
 
     -- Fichier de la Carte
     imgMap = love.graphics.newImage("img/Map/02_Mirror_Islands.png")
@@ -216,8 +211,8 @@ function love.update(dt)
     end
 
     -- Calcul la position du tank en ligne/colonne
-    tank.colonne = math.floor((tank.X - 20) / TILE_WIDTH) + 1
-    tank.ligne = math.floor((tank.Y + 20) / TILE_HEIGHT) + 1
+    tank.colonne = math.floor((tank.X - 20) / TILE_LARGEUR) + 1
+    tank.ligne = math.floor((tank.Y + 20) / TILE_HAUTEUR) + 1
     Collision()
     if tank.sol == 1 then
        -- print("MUR")
@@ -282,12 +277,12 @@ function love.draw()
 
     -- Afficher un éléments par Tuile    
   c,l = nil  
-  for l=1,MAP_HEIGHT do
-    for c=1,MAP_WIDTH do
-      local id = Game.Map[l][c]
-      local tex = Game.TileTextures[id]
-      if tex ~= nil then
-        love.graphics.draw(tex, (c-1)*TILE_WIDTH, (l-1)*TILE_HEIGHT)
+  for l=1,MAP_HAUTEUR do
+    for c=1,MAP_LARGEUR do
+      local id = MAP[l][c]
+      local spriteM = MAP.Sprite_MAP[id]
+      if spriteM ~= nil then
+        love.graphics.draw(spriteM, (c-1)*TILE_LARGEUR, (l-1)*TILE_HAUTEUR)
       end
     end
   end
@@ -311,7 +306,7 @@ function love.draw()
     for k, projectile in ipairs(projectiles) do
         love.graphics.draw(projectile.img, projectile.X, projectile.Y, projectile.angle, 1, 1, imgProj_1:getWidth() / 2, imgProj_1:getHeight() / 2)
     end    
-    -- Texte Tir Chargé * goal.hit == false est ajouté pour évité la supersition du texte GOOD !!*
+    -- spriteMte Tir Chargé * goal.hit == false est ajouté pour évité la supersition du spriteMte GOOD !!*
     if mouseR and goal.hit == false then
         love.graphics.print(math.floor(timer), tank.X - 8, tank.Y - 55, 0, 2, 2)
         if mouseR and timer == 4 then
@@ -339,7 +334,7 @@ function love.draw()
         love.graphics.print("Nb de projectiles : " .. tostring(#projectiles), 0, (15 * 4))
         love.graphics.print("X.Tank : " .. tostring(focus.X - (focus.taille / 2)), 0, (15 * 5))
         love.graphics.print("Y.Tank : " .. tostring(focus.Y - (focus.taille / 2)), 0, (15 * 6))
-        love.graphics.print("Timer Shoot Spécial : " .. tostring(SST), 0, (15 * 7))
+        love.graphics.print("Timer Shoot Spécial : " .. tostring(timer), 0, (15 * 7))
         love.graphics.print("Nb ennemi : " .. tostring(#ennemis), 0, (15 * 8))
         love.graphics.print("Valeur Grille X : " .. tostring(tank.colonne), 0, (15 * 9))
         love.graphics.print("Valeur Grille Y : " .. tostring(tank.ligne), 0, (15 * 10))
@@ -347,17 +342,17 @@ function love.draw()
         -- Affichage à droite
         love.graphics.print("Largeur écran : " .. tostring(screenLargeur), screenLargeur - 123, (15 * 0))
         love.graphics.print("Hauteur écran : " .. tostring(screenHauteur), screenLargeur - 125, (15 * 1))
-        love.graphics.print("Nb de tuile_X : " .. tostring(MAP_WIDTH), screenLargeur - 110, (15 * 2))
-        love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HEIGHT), screenLargeur - 110, (15 * 3))
-        love.graphics.print("Taille d'une tuile : " .. tostring(TILE_WIDTH) .. " px", screenLargeur - 148, (15 * 4))
+        love.graphics.print("Nb de tuile_X : " .. tostring(MAP_LARGEUR), screenLargeur - 110, (15 * 2))
+        love.graphics.print("Nb de tuile_Y : " .. tostring(MAP_HAUTEUR), screenLargeur - 110, (15 * 3))
+        love.graphics.print("Taille d'une tuile : " .. tostring(TILE_LARGEUR) .. " px", screenLargeur - 148, (15 * 4))
 
         -- Affichage position de la souris sur la grille
         local mX = love.mouse.getX()
         local mY = love.mouse.getY()
-        local cM = math.floor(mX / TILE_WIDTH) + 1
-        local lM = math.floor(mY / TILE_HEIGHT) + 1
-        if lM > 0 and cM> 0 and lM <= MAP_HEIGHT and cM<= MAP_WIDTH then
-            local idM = Game.Map[lM][cM]
+        local cM = math.floor(mX / TILE_LARGEUR) + 1
+        local lM = math.floor(mY / TILE_HAUTEUR) + 1
+        if lM > 0 and cM> 0 and lM <= MAP_HAUTEUR and cM<= MAP_LARGEUR then
+            local idM = MAP[lM][cM]
             love.graphics.print("Ligne souris: " .. tostring(lM), 0, (15 * 11))
             love.graphics.print("Colonne souris: " .. tostring(cM), 0, (15 * 12))
             love.graphics.print("Case ID souris: "..tostring(idM), 0, (15 * 13))
@@ -366,10 +361,10 @@ function love.draw()
         -- Affichage position de Player sur la grille
         local tX = tank.X
         local tY = tank.Y
-        local cT = math.floor(tX / TILE_WIDTH) + 1
-        local lT = math.floor(tY / TILE_HEIGHT) + 1
-        if lT > 0 and cT> 0 and lT <= MAP_HEIGHT and cT<= MAP_WIDTH then
-            local idT = Game.Map[lT][cT]
+        local cT = math.floor(tX / TILE_LARGEUR) + 1
+        local lT = math.floor(tY / TILE_HAUTEUR) + 1
+        if lT > 0 and cT> 0 and lT <= MAP_HAUTEUR and cT<= MAP_LARGEUR then
+            local idT = MAP[lT][cT]
             love.graphics.print("Ligne Tank: " .. tostring(lT), 0, (15 * 14))
             love.graphics.print("Colonne Tank: " .. tostring(cT), 0, (15 * 15))
             love.graphics.print("Case ID Tank: "..tostring(idT), 0, (15 * 16))
@@ -378,22 +373,22 @@ function love.draw()
     
     -- Afficher la grille pour debug
     if debug_Grille == true then
-        for nbLigne_V = 1, MAP_WIDTH do
-            love.graphics.line((nbLigne_V * TILE_WIDTH), 0, (nbLigne_V * TILE_WIDTH), 600)
+        for nbLigne_V = 1, MAP_LARGEUR do
+            love.graphics.line((nbLigne_V * TILE_LARGEUR), 0, (nbLigne_V * TILE_LARGEUR), 600)
         end
-        for nbLigne_H = 1, MAP_HEIGHT do
-            love.graphics.line( 0, (nbLigne_H * TILE_HEIGHT), 800, (nbLigne_H * TILE_HEIGHT))
+        for nbLigne_H = 1, MAP_HAUTEUR do
+            love.graphics.line( 0, (nbLigne_H * TILE_HAUTEUR), 800, (nbLigne_H * TILE_HAUTEUR))
         end
     end
 
     if debug_Tile == true then 
         cD,lD = nil  
-        for lD=1,MAP_HEIGHT do
-          for cD=1,MAP_WIDTH do
-            local idD = Game.Map[lD][cD]
-            local texD = idD
-            if texD == 1 then
-              love.graphics.rectangle("fill", (cD-1)*TILE_WIDTH, (lD-1)*TILE_HEIGHT, 40, 40)
+        for lD=1,MAP_HAUTEUR do
+          for cD=1,MAP_LARGEUR do
+            local idD = MAP[lD][cD]
+            local spriteMD = idD
+            if spriteMD == 1 then
+              love.graphics.rectangle("fill", (cD-1)*TILE_LARGEUR, (lD-1)*TILE_HAUTEUR, 40, 40)
             end
           end
         end
