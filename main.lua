@@ -80,6 +80,7 @@ debug = false
 debug_Grille = false
 debug_Tile = false
 debug_Bloc = false
+debug_Camouflage = false
 
 -- Raccourcie clavier (Non utilisé)
 leftMouse = "Off"
@@ -147,6 +148,7 @@ function love.load()
     imgEnnemi_1 = love.graphics.newImage("img/Ennemi/tank_Bleu1.png")
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
     imgCross = love.graphics.newImage("img/UI/cross.png")
+    imgCircle = love.graphics.newImage("img/UI/circle.png")
 
     -- Terrain par tuile
     MAP.Sprite_MAP[0] = nil
@@ -450,14 +452,28 @@ function love.draw()
     end    
     -- Afficher les obstacles pour debug / Call ligne 163 // create ligne 122 /
     if debug_Bloc == true then
-        love.graphics.setColor(0, 0, 0, 1)
         love.graphics.print("DEBUG BLOC PROJECTILE : ACTIVÉ", (screenLargeur / 2) - 150, 90, 0, 1.5, 1.5)
         for i, obstacle in ipairs(obstacles) do
-            love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
+            --love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
+            love.graphics.draw(imgCross, obstacle.X, obstacle.Y, 0, 1, 1)
             -- love.graphics.draw(imgCross, obstacle.X, obstacle.Y, 0, obstacle.TL, obstacle.TH)
 
         end
-        love.graphics.setColor(1, 1, 1, 1)
+    end
+    -- Afficher les obstacles pour debug / Call ligne 163 // create ligne 122 /
+    if debug_Camouflage == true then
+        love.graphics.print("DEBUG BLOC HIDDEN : ACTIVÉ", (screenLargeur / 2) - 150, 90, 0, 1.5, 1.5)
+        cD,lD = nil  
+        for lD=1,MAP_HAUTEUR do
+          for cD=1,MAP_LARGEUR do
+            local idD = MAP[lD][cD]
+            local spriteMD = idD
+            if spriteMD == 2 then
+              -- love.graphics.rectangle("fill", (cD-1)*TILE_LARGEUR, (lD-1)*TILE_HAUTEUR, 40, 40)
+              love.graphics.draw(imgCircle, (cD-1)*TILE_LARGEUR, (lD-1)*TILE_HAUTEUR, 0, 1, 1)
+            end
+          end
+        end
     end
 end
 
@@ -500,4 +516,10 @@ function love.keypressed(key)
     if love.keyboard.isDown("f4") then
         debug_Bloc = not debug_Bloc
     end
+
+    if love.keyboard.isDown("f5") then
+        debug_Camouflage = not debug_Camouflage
+    end
+
+
 end

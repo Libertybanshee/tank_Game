@@ -11,4 +11,4 @@ question prochain live
 
 1 - Animation explosion à l'impact
 
-2 - dans le debug obstacle, remplacer les carré par une l'image croix
+2 - dans le debug Cacher, remplacer les carré par une l'image croix
