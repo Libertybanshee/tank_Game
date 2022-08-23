@@ -105,7 +105,7 @@ end
 -- liste Ennemis / Gestion ligne 156
     local ennemis = {}
 -- Fonction Spawn Ennemi / Call ligne 100 / Draw ligne 153
-function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
+function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pMX, pShoot, pAI)
     local ennemi = {}
           ennemi.X = pX
           ennemi.Y = pY
@@ -113,6 +113,7 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pShoot, pAI)
           ennemi.taille = pTaille
           ennemi.vitesse = pVitesse
           ennemi.img = pImg
+          ennemi.moveX = pMX
           ennemi.shoot = pShoot
           ennemi.AI = pAI
     table.insert(ennemis, ennemi)
@@ -121,12 +122,13 @@ end
 -- liste bloc / *pour gérer les colision avec la map, les projecile étant dans une fonction, on ne peut pas se position sur la variable MAP*
     local obstacles = {}
 -- fonction Obstacle / Call ligne 163 / draw ligne 434
-function SpanwObstacle(pObsX, pObsY, pObsTL, pObsTH)
+function SpanwObstacle(pObsX, pObsY, pObsTL, pObsTH, pObsImg)
     local obstacle = {}
           obstacle.X = pObsX
           obstacle.Y = pObsY
           obstacle.TL = pObsTL
           obstacle.TH = pObsTH
+          obstacle.img = pObsImg
     table.insert(obstacles, obstacle)
 end
 
@@ -144,6 +146,7 @@ function love.load()
     imgProj_2 = love.graphics.newImage("img/Projectile/Tir_2.png")
     imgEnnemi_1 = love.graphics.newImage("img/Ennemi/tank_Bleu1.png")
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
+    imgCross = love.graphics.newImage("img/UI/cross.png")
 
     -- Terrain par tuile
     MAP.Sprite_MAP[0] = nil
@@ -322,9 +325,9 @@ function love.draw()
       end
     end
   end
-  -- ESSAIE TRANSPARANCE
+  -- Afficher tank dissimuler
   if tank.map == 2 then
-    print("MUR")
+    -- print("CACHER !!")
     love.graphics.draw(imgFocus, tank.X + tank.tourelleX, tank.Y + tank.tourelleY, tank.focus, 0.2, 0.2)
   else
     -- Afficher le tank player -> paramètre ligne 30 / update 117
@@ -350,9 +353,10 @@ function love.draw()
     end    
     -- spriteMte Tir Chargé * goal.hit == false est ajouté pour évité la supersition du spriteMte GOOD !!*
     if mouseR and goal.hit == false then
-        love.graphics.print(math.floor(timer), tank.X - 8, tank.Y - 55, 0, 2, 2)
         if mouseR and timer == 4 then
             love.graphics.print("BOUM !!", tank.X - 35, tank.Y - 50, 0, 1.5, 1.5)
+        else
+            love.graphics.print(math.floor(timer), tank.X - 8, tank.Y - 55, 0, 2, 2)
         end
     end
 
@@ -369,6 +373,7 @@ function love.draw()
 
 -- Afficher le debug / create variable ligne 49 / keypress ligne 262 
     if debug == true then
+        love.graphics.setColor(0, 0, 0, 1)
         love.graphics.print("Click Gauche : " .. tostring(leftMouse) .. " Click Droit : " .. tostring(rightMouse))
         love.graphics.print("Valeur X : " .. tostring(tank.X), 0, (15 * 1))
         love.graphics.print("Valeur Y : " .. tostring(tank.Y), 0, (15 * 2))
@@ -411,6 +416,7 @@ function love.draw()
             love.graphics.print("Colonne Tank: " .. tostring(cT), 0, (15 * 15))
             love.graphics.print("Case ID Tank: "..tostring(idT), 0, (15 * 16))
         end
+        love.graphics.setColor(1, 1, 1, 1)
     end
     
     -- Afficher la grille pour debug
@@ -428,6 +434,7 @@ function love.draw()
 
     -- Afficher les collision contre le tank via la grille MAP
     if debug_Tile == true then 
+        love.graphics.setColor(0, 0, 0, 0.8)
         love.graphics.print("DEBUG COLLISION : ACTIVÉ", (screenLargeur / 2) - 120, 80, 0, 1.5, 1.5)
         cD,lD = nil  
         for lD=1,MAP_HAUTEUR do
@@ -439,13 +446,18 @@ function love.draw()
             end
           end
         end
+        love.graphics.setColor(1, 1, 1, 1)
     end    
     -- Afficher les obstacles pour debug / Call ligne 163 // create ligne 122 /
     if debug_Bloc == true then
+        love.graphics.setColor(0, 0, 0, 1)
         love.graphics.print("DEBUG BLOC PROJECTILE : ACTIVÉ", (screenLargeur / 2) - 150, 90, 0, 1.5, 1.5)
         for i, obstacle in ipairs(obstacles) do
             love.graphics.rectangle("fill", obstacle.X, obstacle.Y, obstacle.TL, obstacle.TH)
+            -- love.graphics.draw(imgCross, obstacle.X, obstacle.Y, 0, obstacle.TL, obstacle.TH)
+
         end
+        love.graphics.setColor(1, 1, 1, 1)
     end
 end
 
