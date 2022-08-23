@@ -23,19 +23,19 @@ TILE_T = 40
 MAP = {}
 MAP =  {
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
-              { 1,1,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,0 },
+              { 1,1,3,3,0,0,0,3,3,0,0,0,1,1,1,1,1,1,1,0 },
               { 1,0,0,0,2,2,0,0,0,0,2,0,0,0,0,1,0,0,0,2 },
-              { 1,2,0,0,1,1,1,1,1,0,0,0,0,0,0,1,0,0,2,0 },
-              { 1,0,0,0,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0 },
-              { 1,0,0,0,0,1,1,1,2,1,1,0,0,0,0,1,0,0,1,1 },
-              { 1,2,0,2,0,1,1,1,1,1,1,2,0,0,0,1,0,0,0,1 },
-              { 1,2,2,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0 },
-              { 1,2,0,2,0,0,1,0,0,2,1,1,0,0,0,0,1,0,2,1 },
-              { 1,0,0,0,2,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1 },
-              { 1,0,0,1,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0 },
-              { 1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0 },
-              { 1,2,0,2,2,0,0,0,0,0,2,1,0,0,2,0,1,0,0,0 },
-              { 1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1 },
+              { 1,2,0,0,3,3,3,3,3,0,0,0,0,0,0,1,0,0,2,0 },
+              { 1,0,0,0,3,3,3,3,0,3,3,3,3,0,0,0,0,0,0,0 },
+              { 1,0,0,0,0,3,3,3,2,3,3,0,0,0,0,1,0,0,3,3 },
+              { 1,2,0,2,0,3,3,3,3,3,3,2,0,0,0,1,0,0,0,3 },
+              { 1,2,2,0,0,3,3,3,0,0,0,0,0,0,0,1,1,0,0,0 },
+              { 1,2,0,2,0,0,3,0,0,2,3,3,0,0,0,0,1,0,2,3 },
+              { 1,0,0,0,2,0,0,0,3,0,0,0,0,0,0,0,1,0,0,3 },
+              { 1,0,0,3,3,3,3,0,0,0,0,0,3,0,0,0,0,0,0,0 },
+              { 1,0,0,0,0,3,3,3,0,0,0,0,0,0,0,0,1,0,0,0 },
+              { 1,2,0,2,2,0,0,0,0,0,2,3,0,0,2,0,1,0,0,0 },
+              { 1,1,1,3,3,3,3,3,0,0,3,3,1,1,1,1,1,1,1,3 },
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
             }
 
@@ -100,6 +100,7 @@ function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)
           projectile.ligne = 1
           projectile.colonne = 1
           projectile.map = 0
+          projectile.aSupprimer = false
     table.insert(projectiles, projectile)
 end
 
@@ -120,7 +121,7 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pMX, pShoot, pAI)
     table.insert(ennemis, ennemi)
 end
 
--- liste bloc / *pour gérer les colision avec la map, les projecile étant dans une fonction, on ne peut pas se position sur la variable MAP*
+-- liste bloc / *pour gérer les colision avec la map, les projectile étant dans une fonction, on ne peut pas se position sur la variable MAP*
     local obstacles = {}
 -- fonction Obstacle / Call ligne 163 / draw ligne 434
 function SpanwObstacle(pObsX, pObsY, pObsTL, pObsTH, pObsImg)
@@ -154,7 +155,7 @@ function love.load()
     MAP.Sprite_MAP[0] = nil
     MAP.Sprite_MAP[1] = nil
     MAP.Sprite_MAP[2] = nil
-    MAP.Sprite_MAP[3] = love.graphics.newImage("img/Terrain/road_2.png")
+    MAP.Sprite_MAP[3] = nil
     MAP.Sprite_MAP[4] = love.graphics.newImage("img/Terrain/road_3.png")
     MAP.Sprite_MAP[5] = love.graphics.newImage("img/Terrain/road_4.png")
 
@@ -239,7 +240,7 @@ function love.update(dt)
     tank.colonne = math.floor((tank.X - 20) / TILE_LARGEUR) + 1
     tank.ligne = math.floor((tank.Y + 20) / TILE_HAUTEUR) + 1
     Collision()
-    if tank.map == 1 then
+    if tank.map == 1 or tank.map == 3 then
        -- print("MUR")
         tank.X = old_X
         tank.Y = old_Y
@@ -255,6 +256,19 @@ function love.update(dt)
     for k, projectile in ipairs(projectiles) do
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
+        local col = math.floor(projectile.X / TILE_LARGEUR) + 1
+        local line = math.floor(projectile.Y / TILE_HAUTEUR) + 1
+        if MAP[line][col] == 3 then
+            projectile.aSupprimer = true
+        end
+        -- suppression du projectile lorsqu'il quitte l'écran
+        if projectile.X > screenLargeur or projectile.X < 0 then
+            projectile.aSupprimer = true
+        end
+        -- /// BUG sur l'axe Y le projectile fais planté le jeu
+        if projectile.Y > screenHauteur - 20 or projectile.Y < 20 then
+            projectile.aSupprimer = true
+        end
     end
     if mouseR then
         if charge == false then
@@ -281,7 +295,7 @@ function love.update(dt)
             -- Suppression de l'ennemi après un impact de projectile
             if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < ennemiT then
                 table.remove(ennemis, n)
-                table.remove(projectiles, k)
+                projectileG.aSupprimer = true
             end
         end
     end
@@ -296,8 +310,16 @@ function love.update(dt)
             local projectileG = projectiles[nbk]
             -- Suppression de l'ennemi après un impact de projectile
             if distance(projectileG.X, projectileG.Y, obstacleG.X, obstacleG.Y) < obstacleL then
-                table.remove(projectiles, nbk)
+                projectileG.aSupprimer = true
             end
+        end
+    end
+
+-- Supprimer un projectiles
+    for n = #projectiles, 1, -1 do
+        local projectile = projectiles[n]
+        if projectile.aSupprimer then
+            table.remove(projectiles, n)
         end
     end
 
@@ -443,7 +465,7 @@ function love.draw()
           for cD=1,MAP_LARGEUR do
             local idD = MAP[lD][cD]
             local spriteMD = idD
-            if spriteMD == 1 then
+            if spriteMD == 1 or spriteMD == 3 then
               love.graphics.rectangle("fill", (cD-1)*TILE_LARGEUR, (lD-1)*TILE_HAUTEUR, 40, 40)
             end
           end

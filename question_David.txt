@@ -3,7 +3,7 @@ QUESTION DAVID
 2 - Debug de la grille mal paramètrés *
 
 4 - élargir la hitbox des impact des projectile VS ennemi/obstacle ->> ligne 280 *
-    actuellemnt hotbix décalé de 20px
+    actuellemnt hotbix décalé de 20px solution en mettant des point de contact sur les 4 coins du tank
 
     solution DLC numéro 99
 
@@ -11,4 +11,4 @@ question prochain live
 
 1 - Animation explosion à l'impact
 
-2 - dans le debug Cacher, remplacer les carré par une l'image croix
+2 - BUG sur l'axe Y le projectile fais planté le jeu
