@@ -107,7 +107,7 @@ end
 -- liste Ennemis / Gestion ligne 156
     local ennemis = {}
 -- Fonction Spawn Ennemi / Call ligne 100 / Draw ligne 153
-function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pMX, pShoot, pAI)
+function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot, pMX)
     local ennemi = {}
           ennemi.X = pX
           ennemi.Y = pY
@@ -115,9 +115,10 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pMX, pShoot, pAI)
           ennemi.taille = pTaille
           ennemi.vitesse = pVitesse
           ennemi.img = pImg
-          ennemi.moveX = pMX
-          ennemi.shoot = pShoot
           ennemi.AI = pAI
+          ennemi.distance = 5
+          ennemi.shoot = pShoot
+          ennemi.moveX = pMX
     table.insert(ennemis, ennemi)
 end
 
@@ -181,7 +182,7 @@ function love.load()
     southWest = 4.5
     west =  - 3.15
     -- fonction + legende des paramètres ligne 67 / Draw ligne 153
-    SpanwEnnemi(100, 180, south, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move")
     SpanwEnnemi(460, 100, east, 0.225, 0, imgEnnemi_1)
     SpanwEnnemi(540, 255, south, 0.225, 0, imgEnnemi_1)
     SpanwEnnemi(780, 140, south, 0.225, 0, imgEnnemi_1)
@@ -289,6 +290,21 @@ function love.update(dt)
     for n = #ennemis, 1, -1 do
         local ennemiG = ennemis[n]
         local ennemiT = 30
+        -- ESSAIE AI ENNEMI
+        if ennemiG.AI == "move" then
+            local ratio_X = ennemiG.vitesse * math.cos(ennemiG.angle)
+            local ratio_Y = ennemiG.vitesse * math.sin(ennemiG.angle)
+            ennemiG.X = ennemiG.X + ratio_X * dt
+            ennemiG.Y = ennemiG.Y + ratio_Y * dt
+            if ennemiG.distance == 1 then
+                ennemiG.AI = "back"
+            end
+        elseif ennemiG.AI == "back" then
+            ennemiG.angle = - ennemiG.angle
+            ennemiG.AI = "move"
+            ennemiG.distance = 0
+        end
+
         -- Parcours de la liste des projectiles
         for k = #projectiles, 1, -1 do
             local projectileG = projectiles[k]
@@ -497,6 +513,14 @@ function love.draw()
           end
         end
     end
+    -- Afficher le timer déplacements des tanks
+    if debug_ennemiDist == true then
+        for y, ennemi in ipairs(ennemis) do
+        love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.print(ennemi.distance, ennemi.X - 5, ennemi.Y - 45, 0, 1.5, 1.5)
+        love.graphics.setColor(1, 1, 1, 1)
+        end
+    end
 end
 
 function love.mousepressed(b)  
@@ -541,6 +565,10 @@ function love.keypressed(key)
 
     if love.keyboard.isDown("f5") then
         debug_Camouflage = not debug_Camouflage
+    end
+
+    if love.keyboard.isDown("f6") then
+        debug_ennemiDist = not debug_ennemiDist
     end
 
 

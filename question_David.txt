@@ -12,3 +12,5 @@ question prochain live
 1 - Animation explosion à l'impact
 
 2 - BUG sur l'axe Y le projectile fais planté le jeu
+
+3 - si on inverse les action du if du timer, ça ne fonctionne plus, pourquoi ?
