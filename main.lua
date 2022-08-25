@@ -74,6 +74,7 @@ tank.tourelleY = 8
 tank.ligne = 1
 tank.colonne = 1
 tank.map = 0
+tank.armure = 1
 
 -- mode Debug / keypress ligne 262 / draw ligne 226
 debug = false
@@ -89,14 +90,14 @@ rightMouse = "Off"
 -- Liste projectiles / Draw ligne 188 / Update ligne 143
     local projectiles = {}
 -- Fonction Tir
-function Shoot(pX, pY, pAngle, pVitesse, pImg, pShoot)    
+function Shoot(pX, pY, pAngle, pVitesse, pImg, pOri)    
     local projectile = {}
           projectile.X = pX
           projectile.Y = pY
           projectile.angle = pAngle
           projectile.vitesse = pVitesse
           projectile.img = pImg
-          projectile.shoot = pShoot
+          projectile.origine = pOri
           projectile.ligne = 1
           projectile.colonne = 1
           projectile.map = 0
@@ -120,7 +121,7 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.shoot = pShoot
           ennemi.moveX = pMX
           ennemi.reboot = pDist
-          ennemi.timerTir = 0
+          ennemi.timerTir = 5
           ennemi.cadenceTir = 0.5
     table.insert(ennemis, ennemi)
 end
@@ -143,6 +144,15 @@ function Collision(pID)
     tank.map = MAP[tank.ligne][tank.colonne]
 end
 
+function Start()
+    ennemis = {}
+    projectiles = {}
+    tank.X = spawnPlayer.X + (spawnPlayer.taille / 2)
+    tank.Y = spawnPlayer.Y + (spawnPlayer.taille / 2)
+    tank.angle = spawnPlayer.angle
+    tank.armure = 1
+end
+
 
 function love.load()
 -- Fichier Image
@@ -156,6 +166,9 @@ function love.load()
     imgCircle = love.graphics.newImage("img/UI/circle.png")
     imgPE = love.graphics.newImage("img/UI/PE.png")
     imgPI = love.graphics.newImage("img/UI/PI.png")
+
+-- Relancer le jeu
+    Start()
 
     -- Terrain par tuile
     MAP.Sprite_MAP[0] = nil
@@ -173,7 +186,7 @@ function love.load()
         print("COLISION")
     end
 
--- Obstacle pour les projectiles / create ligne 122 / draw ligne 434 / paramètre ligne 288
+-- Obstacle pour les projectiles / create ligne 122 / draw ligne 434 / paramètre ligne 288 dans un fichier a part 
     spanwObs = require("spawnObstacle")
 
 -- Apparation des Ennemi
@@ -186,12 +199,8 @@ function love.load()
     south = math.pi / 2
     southWest = 4.5
     west =  - 3.15
-    -- fonction + legende des paramètres ligne 67 / Draw ligne 153
-    SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
-    SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
-    SpanwEnnemi(540, 255, south, 0.225, 50, imgEnnemi_1, "move", 5)
-    SpanwEnnemi(780, 140, south, 0.225, 20, imgEnnemi_1, "move", 3)
-    SpanwEnnemi(700, 420, west, 0.225, 20, imgEnnemi_1, "move", 3)
+    -- fonction + legende des paramètres ligne 67 / Draw ligne 153 dans un fichier a part 
+    spanwEnn = require("spawnEnnemi")
 
 -- Destination Trajet / Draw ligne 203 / Load ligne 180 / Update ligne 180
           goal = {}
@@ -266,7 +275,6 @@ function love.update(dt)
         if projectile.X > screenLargeur or projectile.X < 0 then
             projectile.aSupprimer = true
         end
-        -- /// BUG sur l'axe Y le projectile fais planté le jeu
         if projectile.Y > screenHauteur or projectile.Y < 0 then
             projectile.aSupprimer = true
         end
@@ -288,7 +296,7 @@ function love.update(dt)
     end
     if timer <= 0.9 and charge == false then
         charge = true
-        Shoot(tank.X, tank.Y, tank.focus, 1000, imgProj_2, "surcharge") 
+        Shoot(tank.X, tank.Y, tank.focus, 1000, imgProj_2, "player") 
         timer = 4
     end
 
@@ -322,10 +330,16 @@ function love.update(dt)
             ennemiG.Y = ennemiG.Y + ratio_Y * dt
             if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) > 150 then
                 ennemiG.AI = "back"
-            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 90 then
+            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 50 then
                 ennemiG.AI = "attack"
             end
+        -- AI MODE ATTAQUE
         elseif ennemiG.AI == "attack" then 
+            ennemiG.timerTir = ennemiG.timerTir + dt
+            if ennemiG.timerTir >= ennemiG.cadenceTir then
+                Shoot(ennemiG.X, ennemiG.Y, ennemiG.angle, 1000, imgProj_2, "ennemi")
+                ennemiG.timerTir = 0
+            end
         -- AI RETOUR EN ETAT NORMAL
         elseif ennemiG.AI == "back" then 
             if ennemiG.angle ~= west or ennemiG.angle ~= east then
@@ -343,9 +357,14 @@ function love.update(dt)
         -- Parcours de la liste des projectiles
         for k = #projectiles, 1, -1 do
             local projectileG = projectiles[k]
-            -- Suppression de l'ennemi après un impact de projectile
-            if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < ennemiT then
+            -- Suppression du projectile et de l'ennemi après leur impact
+            if distance(projectileG.X, projectileG.Y, ennemiG.X, ennemiG.Y) < ennemiT and projectileG.origine == "player" then
                 table.remove(ennemis, n)
+                projectileG.aSupprimer = true
+            end
+            -- Suppression du projectile et de l'ennemi après leur impact 2
+            if distance(projectileG.X, projectileG.Y, tank.X, tank.Y) < 40 and projectileG.origine == "ennemi" then
+                tank.armure = tank.armure - 1
                 projectileG.aSupprimer = true
             end
         end
@@ -359,7 +378,7 @@ function love.update(dt)
         -- Parcours de la liste des projectiles
         for nbk = #projectiles, 1, -1 do
             local projectileG = projectiles[nbk]
-            -- Suppression de l'ennemi après un impact de projectile
+            -- Suppression le projectile sur l'obstacle
             if distance(projectileG.X, projectileG.Y, obstacleG.X, obstacleG.Y) < obstacleL then
                 projectileG.aSupprimer = true
             end
@@ -382,6 +401,11 @@ function love.update(dt)
 -- Condition de victoire par destruction 
     if #ennemis <= 0 then
         goal.hit = true
+    end
+
+-- Condition de défaire
+    if tank.armure <= 0 then
+        Start()
     end
 end
 
@@ -420,7 +444,11 @@ function love.draw()
             love.graphics.draw(imgPE, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
         elseif ennemi.AI == "attack" then
             love.graphics.setColor(1, 0, 0)
-            love.graphics.print("FEU !!", ennemi.X - 25, ennemi.Y - 50, 0, 1.5, 1.5)
+            if ennemi.AI == "attack" then
+                love.graphics.print("FEU !!", ennemi.X - 25, ennemi.Y - 50, 0, 1.5, 1.5)
+            else
+                love.graphics.print(math.floor(ennemi.timerTir), tank.X - 8, tank.Y - 55, 0, 2, 2)
+            end
             love.graphics.setColor(1, 1, 1)
         elseif ennemi.AI == "surveillance" then
             love.graphics.draw(imgPI, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
@@ -573,7 +601,7 @@ function love.mousepressed(b)
     -- Test Clique gauche (Remettre dans la MousePressed avec David)
     if love.mouse.isDown(1) then
         leftMouse = "Up"
-        Shoot(tank.X, tank.Y, tank.focus, 700, imgProj_1) 
+        Shoot(tank.X, tank.Y, tank.focus, 700, imgProj_1, "player") 
     else
         leftMouse = "Off"
     end

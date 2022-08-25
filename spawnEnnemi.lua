@@ -1,0 +1,5 @@
+SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
+SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
+SpanwEnnemi(540, 255, south, 0.225, 50, imgEnnemi_1, "move", 5)
+SpanwEnnemi(780, 140, south, 0.225, 20, imgEnnemi_1, "move", 3)
+SpanwEnnemi(700, 420, west, 0.225, 20, imgEnnemi_1, "move", 3)
