@@ -29,11 +29,11 @@ MAP =  {
               { 1,0,0,0,3,3,3,3,0,3,3,3,3,0,0,0,0,0,0,0 },
               { 1,0,0,0,0,3,3,3,2,3,3,0,0,0,0,1,0,0,3,3 },
               { 1,2,0,2,0,3,3,3,3,3,3,2,0,0,0,1,0,0,0,3 },
-              { 1,2,2,0,0,3,3,3,0,0,0,0,0,0,0,1,1,0,0,0 },
+              { 1,2,2,0,0,3,3,3,0,0,3,0,0,0,0,1,1,0,0,0 },
               { 1,2,0,2,0,0,3,0,0,2,3,3,0,0,0,0,1,0,2,3 },
-              { 1,0,0,0,2,0,0,0,3,0,0,0,0,0,0,0,1,0,0,3 },
+              { 1,0,0,0,2,0,0,0,3,0,0,0,3,0,0,0,1,0,0,3 },
               { 1,0,0,3,3,3,3,0,0,0,0,0,3,0,0,0,0,0,0,0 },
-              { 1,0,0,0,0,3,3,3,0,0,0,0,0,0,0,0,1,0,0,0 },
+              { 1,0,0,0,0,3,3,3,0,0,0,0,3,0,0,0,1,0,0,0 },
               { 1,2,0,2,2,0,0,0,0,0,2,3,0,0,2,0,1,0,0,0 },
               { 1,1,1,3,3,3,3,3,0,0,3,3,1,1,1,1,1,1,1,3 },
               { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 },
@@ -116,9 +116,10 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.vitesse = pVitesse
           ennemi.img = pImg
           ennemi.AI = pAI
-          ennemi.distance = 5
+          ennemi.distance = pDist
           ennemi.shoot = pShoot
           ennemi.moveX = pMX
+          ennemi.reboot = pDist
     table.insert(ennemis, ennemi)
 end
 
@@ -182,11 +183,11 @@ function love.load()
     southWest = 4.5
     west =  - 3.15
     -- fonction + legende des paramètres ligne 67 / Draw ligne 153
-    SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move")
-    SpanwEnnemi(460, 100, east, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(540, 255, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(780, 140, south, 0.225, 0, imgEnnemi_1)
-    SpanwEnnemi(700, 420, west, 0.225, 0, imgEnnemi_1)
+    SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
+    SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
+    SpanwEnnemi(540, 255, south, 0.225, 50, imgEnnemi_1, "move", 5)
+    SpanwEnnemi(780, 140, south, 0.225, 20, imgEnnemi_1, "move", 3)
+    SpanwEnnemi(700, 420, west, 0.225, 20, imgEnnemi_1, "move", 3)
 
 -- Destination Trajet / Draw ligne 203 / Load ligne 180 / Update ligne 180
           goal = {}
@@ -257,18 +258,20 @@ function love.update(dt)
     for k, projectile in ipairs(projectiles) do
         projectile.X = projectile.X + (dt * projectile.vitesse) * math.cos(projectile.angle)
         projectile.Y = projectile.Y + (dt * projectile.vitesse) * math.sin(projectile.angle)
-        local col = math.floor(projectile.X / TILE_LARGEUR) + 1
-        local line = math.floor(projectile.Y / TILE_HAUTEUR) + 1
-        if MAP[line][col] == 3 then
-            projectile.aSupprimer = true
-        end
         -- suppression du projectile lorsqu'il quitte l'écran
         if projectile.X > screenLargeur or projectile.X < 0 then
             projectile.aSupprimer = true
         end
         -- /// BUG sur l'axe Y le projectile fais planté le jeu
-        if projectile.Y > screenHauteur - 20 or projectile.Y < 20 then
+        if projectile.Y > screenHauteur or projectile.Y < 0 then
             projectile.aSupprimer = true
+        end
+        if projectile.aSupprimer == false then
+            local col = math.floor(projectile.X / TILE_LARGEUR) + 1
+            local line = math.floor(projectile.Y / TILE_HAUTEUR) + 1
+            if MAP[line][col] == 3 then
+                projectile.aSupprimer = true
+            end
         end
     end
     if mouseR then
@@ -290,19 +293,27 @@ function love.update(dt)
     for n = #ennemis, 1, -1 do
         local ennemiG = ennemis[n]
         local ennemiT = 30
-        -- ESSAIE AI ENNEMI
+        -- DÉPLACEMENT ENNEMI
         if ennemiG.AI == "move" then
             local ratio_X = ennemiG.vitesse * math.cos(ennemiG.angle)
             local ratio_Y = ennemiG.vitesse * math.sin(ennemiG.angle)
             ennemiG.X = ennemiG.X + ratio_X * dt
             ennemiG.Y = ennemiG.Y + ratio_Y * dt
-            if ennemiG.distance == 1 then
+            ennemiG.distance = ennemiG.distance - dt
+            if ennemiG.distance <= 0.999 then
                 ennemiG.AI = "back"
             end
-        elseif ennemiG.AI == "back" then
-            ennemiG.angle = - ennemiG.angle
+        elseif ennemiG.AI == "back" then 
+            if ennemiG.angle ~= west or ennemiG.angle ~= east then
+                ennemiG.angle = - ennemiG.angle
+            end
+            if ennemiG.angle == east then
+                ennemiG.angle = west
+            elseif ennemiG.angle == - west then
+                ennemiG.angle = east
+            end
             ennemiG.AI = "move"
-            ennemiG.distance = 0
+            ennemiG.distance = ennemiG.reboot
         end
 
         -- Parcours de la liste des projectiles
@@ -515,9 +526,9 @@ function love.draw()
     end
     -- Afficher le timer déplacements des tanks
     if debug_ennemiDist == true then
-        for y, ennemi in ipairs(ennemis) do
+        for i, ennemi in ipairs(ennemis) do
         love.graphics.setColor(0, 0, 0, 1)
-        love.graphics.print(ennemi.distance, ennemi.X - 5, ennemi.Y - 45, 0, 1.5, 1.5)
+        love.graphics.print(math.floor(ennemi.distance), ennemi.X - 5, ennemi.Y - 45, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         end
     end

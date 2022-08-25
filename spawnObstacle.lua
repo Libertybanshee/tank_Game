@@ -37,6 +37,7 @@ SpanwObstacle((19 * TILE_T), (6 * TILE_T), 40, 40)
 SpanwObstacle((5 * TILE_T), (7 * TILE_T), 40, 40)
 SpanwObstacle((6 * TILE_T), (7 * TILE_T), 40, 40)
 SpanwObstacle((7 * TILE_T), (7 * TILE_T), 40, 40)
+SpanwObstacle((10 * TILE_T), (7 * TILE_T), 40, 40)
 -- Ligne suivante
 SpanwObstacle((6 * TILE_T), (8 * TILE_T), 40, 40)
 SpanwObstacle((10 * TILE_T), (8 * TILE_T), 40, 40)
@@ -44,6 +45,7 @@ SpanwObstacle((11 * TILE_T), (8 * TILE_T), 40, 40)
 SpanwObstacle((19 * TILE_T), (8 * TILE_T), 40, 40)
 -- Ligne suivante
 SpanwObstacle((8 * TILE_T), (9 * TILE_T), 40, 40)
+SpanwObstacle((12 * TILE_T), (9 * TILE_T), 40, 40)
 SpanwObstacle((19 * TILE_T), (9 * TILE_T), 40, 40)
 -- Ligne suivante
 SpanwObstacle((3 * TILE_T), (10 * TILE_T), 40, 40)
@@ -55,6 +57,7 @@ SpanwObstacle((12 * TILE_T), (10 * TILE_T), 40, 40)
 SpanwObstacle((5 * TILE_T), (11 * TILE_T), 40, 40)
 SpanwObstacle((6 * TILE_T), (11 * TILE_T), 40, 40)
 SpanwObstacle((7 * TILE_T), (11 * TILE_T), 40, 40)
+SpanwObstacle((12 * TILE_T), (11 * TILE_T), 40, 40)
 -- Ligne suivante
 SpanwObstacle((11 * TILE_T), (12 * TILE_T), 40, 40)
 -- Ligne suivante
