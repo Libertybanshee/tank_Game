@@ -120,6 +120,8 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.shoot = pShoot
           ennemi.moveX = pMX
           ennemi.reboot = pDist
+          ennemi.timerTir = 0
+          ennemi.cadenceTir = 0.5
     table.insert(ennemis, ennemi)
 end
 
@@ -143,7 +145,7 @@ end
 
 
 function love.load()
--- Fichier de l'image Tank Player
+-- Fichier Image
     imgPlayer = love.graphics.newImage("img/Player/tank_Vert1.png")
     imgFocus = love.graphics.newImage("img/Player/tourelle1.png")
     imgProj_1 = love.graphics.newImage("img/Projectile/Tir_1.png")
@@ -152,6 +154,8 @@ function love.load()
     imgTarget = love.graphics.newImage("img/UI/target_1.png")
     imgCross = love.graphics.newImage("img/UI/cross.png")
     imgCircle = love.graphics.newImage("img/UI/circle.png")
+    imgPE = love.graphics.newImage("img/UI/PE.png")
+    imgPI = love.graphics.newImage("img/UI/PI.png")
 
     -- Terrain par tuile
     MAP.Sprite_MAP[0] = nil
@@ -293,16 +297,36 @@ function love.update(dt)
     for n = #ennemis, 1, -1 do
         local ennemiG = ennemis[n]
         local ennemiT = 30
-        -- DÉPLACEMENT ENNEMI
+    -- DÉPLACEMENT ENNEMI
+        -- ETAT NORMAL
         if ennemiG.AI == "move" then
             local ratio_X = ennemiG.vitesse * math.cos(ennemiG.angle)
             local ratio_Y = ennemiG.vitesse * math.sin(ennemiG.angle)
             ennemiG.X = ennemiG.X + ratio_X * dt
             ennemiG.Y = ennemiG.Y + ratio_Y * dt
             ennemiG.distance = ennemiG.distance - dt
-            if ennemiG.distance <= 0.999 then
+            -- DECLENCHEUR AI
+            if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 100 then
+                ennemiG.AI = "poursuite"
+            elseif ennemiG.distance <= 0.999 then
                 ennemiG.AI = "back"
             end
+        -- AI repère le player
+        elseif ennemiG.AI == "poursuite" then
+            -- angle entre l'ennemi et le player
+            local anglePoursuite = math.angle(ennemiG.X, ennemiG.Y, tank.X, tank.Y)
+            ennemiG.angle = anglePoursuite
+            local ratio_X = ennemiG.vitesse * math.cos(anglePoursuite)
+            local ratio_Y = ennemiG.vitesse * math.sin(anglePoursuite)
+            ennemiG.X = ennemiG.X + ratio_X * dt
+            ennemiG.Y = ennemiG.Y + ratio_Y * dt
+            if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) > 150 then
+                ennemiG.AI = "back"
+            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 90 then
+                ennemiG.AI = "attack"
+            end
+        elseif ennemiG.AI == "attack" then 
+        -- AI RETOUR EN ETAT NORMAL
         elseif ennemiG.AI == "back" then 
             if ennemiG.angle ~= west or ennemiG.angle ~= east then
                 ennemiG.angle = - ennemiG.angle
@@ -392,6 +416,15 @@ function love.draw()
 -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
     for j, ennemi in ipairs(ennemis) do
         love.graphics.draw(ennemi.img, ennemi.X, ennemi.Y, ennemi.angle, ennemi.taille, ennemi.taille, ennemi.img:getWidth() / 2, ennemi.img:getHeight() / 2)
+        if ennemi.AI == "poursuite" then
+            love.graphics.draw(imgPE, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
+        elseif ennemi.AI == "attack" then
+            love.graphics.setColor(1, 0, 0)
+            love.graphics.print("FEU !!", ennemi.X - 25, ennemi.Y - 50, 0, 1.5, 1.5)
+            love.graphics.setColor(1, 1, 1)
+        elseif ennemi.AI == "surveillance" then
+            love.graphics.draw(imgPI, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
+        end
     end
 
 -- Afficher la Visée -> paramètre ligne 12
@@ -529,6 +562,7 @@ function love.draw()
         for i, ennemi in ipairs(ennemis) do
         love.graphics.setColor(0, 0, 0, 1)
         love.graphics.print(math.floor(ennemi.distance), ennemi.X - 5, ennemi.Y - 45, 0, 1.5, 1.5)
+        love.graphics.print(ennemi.AI, ennemi.X - 25, ennemi.Y + 15, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         end
     end
