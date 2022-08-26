@@ -122,8 +122,8 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.shoot = pShoot
           ennemi.moveX = pMX
           ennemi.reboot = pDist
-          ennemi.timerTir = 5
-          ennemi.cadenceTir = 0.5
+          ennemi.timerTir = 4
+          ennemi.cadenceTir = 4
     table.insert(ennemis, ennemi)
 end
 
@@ -167,6 +167,7 @@ function love.load()
     imgCircle = love.graphics.newImage("img/UI/circle.png")
     imgPE = love.graphics.newImage("img/UI/PE.png")
     imgPI = love.graphics.newImage("img/UI/PI.png")
+    imgDecompte = love.graphics.newImage("img/UI/decompte.png")
 
 -- Relancer le jeu
     Start()
@@ -289,7 +290,7 @@ function love.update(dt)
     end
     if mouseR then
         if charge == false then
-            timer = timer - (1 / 30)
+            timer = timer - dt
         end
     else
         timer = 4
@@ -333,15 +334,16 @@ function love.update(dt)
             if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) > 150 then
                 ennemiG.vitesse = ennemiG.vitesseR
                 ennemiG.AI = "back"
-            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 50 then
+            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 100 then
                 ennemiG.AI = "attack"
             end
         -- AI MODE ATTAQUE
         elseif ennemiG.AI == "attack" then 
-            ennemiG.timerTir = ennemiG.timerTir + dt
-            if ennemiG.timerTir >= ennemiG.cadenceTir then
+            ennemiG.timerTir = ennemiG.timerTir - dt
+            print(math.floor(ennemiG.timerTir))
+            if ennemiG.timerTir <= 0 then
                 Shoot(ennemiG.X, ennemiG.Y, ennemiG.angle, 1000, imgProj_2, "ennemi")
-                ennemiG.timerTir = 0
+                ennemiG.timerTir = ennemiG.cadenceTir
             end
         -- AI RETOUR EN ETAT NORMAL
         elseif ennemiG.AI == "back" then 
@@ -407,7 +409,7 @@ function love.update(dt)
     end
 
 -- Condition de défaire
-    if tank.armure <= 0 then
+    if tank.armure <= -100 then
         Start()
         SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
         SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
@@ -451,13 +453,12 @@ function love.draw()
         if ennemi.AI == "close" then
             love.graphics.draw(imgPE, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
         elseif ennemi.AI == "attack" then
-            love.graphics.setColor(1, 0, 0)
             if ennemi.AI == "attack" then
-                love.graphics.print("FEU !!", ennemi.X - 25, ennemi.Y - 50, 0, 1.5, 1.5)
-            else
-                love.graphics.print(math.floor(ennemi.timerTir), tank.X - 8, tank.Y - 55, 0, 2, 2)
+                love.graphics.draw(imgDecompte, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
+                love.graphics.setColor(1, 0, 0)
+                love.graphics.print(math.floor(ennemi.timerTir), ennemi.X - 16, ennemi.Y - 53, 0, 1.5, 1.5)
+                love.graphics.setColor(1, 1, 1)
             end
-            love.graphics.setColor(1, 1, 1)
         elseif ennemi.AI == "surveillance" then
             love.graphics.draw(imgPI, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
         end
