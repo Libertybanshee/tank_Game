@@ -115,6 +115,7 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.angle = pAngle
           ennemi.taille = pTaille
           ennemi.vitesse = pVitesse
+          ennemi.vitesseR = pVitesse
           ennemi.img = pImg
           ennemi.AI = pAI
           ennemi.distance = pDist
@@ -315,20 +316,22 @@ function love.update(dt)
             ennemiG.distance = ennemiG.distance - dt
             -- DECLENCHEUR AI
             if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 100 then
-                ennemiG.AI = "poursuite"
+                ennemiG.AI = "close"
             elseif ennemiG.distance <= 0.999 then
                 ennemiG.AI = "back"
             end
         -- AI repère le player
-        elseif ennemiG.AI == "poursuite" then
+        elseif ennemiG.AI == "close" then
             -- angle entre l'ennemi et le player
             local anglePoursuite = math.angle(ennemiG.X, ennemiG.Y, tank.X, tank.Y)
             ennemiG.angle = anglePoursuite
             local ratio_X = ennemiG.vitesse * math.cos(anglePoursuite)
             local ratio_Y = ennemiG.vitesse * math.sin(anglePoursuite)
+            ennemiG.vitesse = 0
             ennemiG.X = ennemiG.X + ratio_X * dt
             ennemiG.Y = ennemiG.Y + ratio_Y * dt
             if distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) > 150 then
+                ennemiG.vitesse = ennemiG.vitesseR
                 ennemiG.AI = "back"
             elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 50 then
                 ennemiG.AI = "attack"
@@ -406,6 +409,11 @@ function love.update(dt)
 -- Condition de défaire
     if tank.armure <= 0 then
         Start()
+        SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
+        SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
+        SpanwEnnemi(540, 255, south, 0.225, 50, imgEnnemi_1, "move", 5)
+        SpanwEnnemi(780, 140, south, 0.225, 20, imgEnnemi_1, "move", 3)
+        SpanwEnnemi(700, 420, west, 0.225, 20, imgEnnemi_1, "move", 3)
     end
 end
 
@@ -440,7 +448,7 @@ function love.draw()
 -- Afficher les ennemis -> paramètre ligne 67 / call ligne 100
     for j, ennemi in ipairs(ennemis) do
         love.graphics.draw(ennemi.img, ennemi.X, ennemi.Y, ennemi.angle, ennemi.taille, ennemi.taille, ennemi.img:getWidth() / 2, ennemi.img:getHeight() / 2)
-        if ennemi.AI == "poursuite" then
+        if ennemi.AI == "close" then
             love.graphics.draw(imgPE, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
         elseif ennemi.AI == "attack" then
             love.graphics.setColor(1, 0, 0)
