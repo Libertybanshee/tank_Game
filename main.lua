@@ -124,6 +124,7 @@ function SpanwEnnemi(pX, pY, pAngle, pTaille, pVitesse, pImg, pAI, pDist, pShoot
           ennemi.reboot = pDist
           ennemi.timerTir = 4
           ennemi.cadenceTir = 4
+          ennemi.timer = 1
     table.insert(ennemis, ennemi)
 end
 
@@ -336,13 +337,12 @@ function love.update(dt)
                 ennemiG.vitesse = ennemiG.vitesseR
                 ennemiG.AI = "back"
             elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 100 then
-                timerAI = 2
-                timerAI = timerAI - dt
-                if timerAI <= 0 then
-                    timerAI = 5
+                ennemiG.timer = ennemiG.timer - dt
+                print(ennemiG.timer)
+                if ennemiG.timer <= 0 then
+                    ennemiG.AI = "attack"
+                    ennemiG.timer = 2
                 end
-                print(timerAI)
-                ennemiG.AI = "attack"
             end
         -- AI MODE ATTAQUE
         elseif ennemiG.AI == "attack" then 
@@ -423,7 +423,7 @@ function love.update(dt)
     end
 
 -- Condition de défaire
-    if tank.armure <= -100 then
+    if tank.armure <= 0 then
         Start()
         SpanwEnnemi(100, 180, south, 0.225, 20, imgEnnemi_1, "move", 5)
         SpanwEnnemi(460, 100, east, 0.225, 20, imgEnnemi_1, "move", 5)
