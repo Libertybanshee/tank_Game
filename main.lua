@@ -168,6 +168,7 @@ function love.load()
     imgPE = love.graphics.newImage("img/UI/PE.png")
     imgPI = love.graphics.newImage("img/UI/PI.png")
     imgDecompte = love.graphics.newImage("img/UI/decompte.png")
+    imgFire = love.graphics.newImage("img/UI/fire.png")
 
 -- Relancer le jeu
     Start()
@@ -335,15 +336,28 @@ function love.update(dt)
                 ennemiG.vitesse = ennemiG.vitesseR
                 ennemiG.AI = "back"
             elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) < 100 then
+                timerAI = 2
+                timerAI = timerAI - dt
+                if timerAI <= 0 then
+                    timerAI = 5
+                end
+                print(timerAI)
                 ennemiG.AI = "attack"
             end
         -- AI MODE ATTAQUE
         elseif ennemiG.AI == "attack" then 
+            local anglePoursuite = math.angle(ennemiG.X, ennemiG.Y, tank.X, tank.Y)
+            ennemiG.angle = anglePoursuite
+            local ratio_X = ennemiG.vitesse * math.cos(anglePoursuite)
+            local ratio_Y = ennemiG.vitesse * math.sin(anglePoursuite)
             ennemiG.timerTir = ennemiG.timerTir - dt
-            print(math.floor(ennemiG.timerTir))
-            if ennemiG.timerTir <= 0 then
+            -- print(math.floor(ennemiG.timerTir))
+            if ennemiG.timerTir <= 0.5 then
                 Shoot(ennemiG.X, ennemiG.Y, ennemiG.angle, 1000, imgProj_2, "ennemi")
                 ennemiG.timerTir = ennemiG.cadenceTir
+            elseif distance(ennemiG.X, ennemiG.Y, tank.X, tank.Y) > 150 then
+                ennemiG.vitesse = ennemiG.vitesseR
+                ennemiG.AI = "back"
             end
         -- AI RETOUR EN ETAT NORMAL
         elseif ennemiG.AI == "back" then 
@@ -454,10 +468,17 @@ function love.draw()
             love.graphics.draw(imgPE, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
         elseif ennemi.AI == "attack" then
             if ennemi.AI == "attack" then
-                love.graphics.draw(imgDecompte, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
-                love.graphics.setColor(1, 0, 0)
-                love.graphics.print(math.floor(ennemi.timerTir), ennemi.X - 16, ennemi.Y - 53, 0, 1.5, 1.5)
-                love.graphics.setColor(1, 1, 1)
+                if ennemi.timerTir <= 0.999 then
+                    love.graphics.draw(imgFire, ennemi.X - 35, ennemi.Y - 54, 0, 0.6, 0.6)
+                    love.graphics.setColor(1, 0, 0)
+                    love.graphics.print("FEU", ennemi.X - 20, ennemi.Y - 49, 0, 1.5, 1.5)
+                    love.graphics.setColor(1, 1, 1)
+                else
+                    love.graphics.draw(imgDecompte, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
+                    love.graphics.setColor(1, 0, 0)
+                    love.graphics.print(math.floor(ennemi.timerTir), ennemi.X - 16, ennemi.Y - 53, 0, 1.5, 1.5)
+                    love.graphics.setColor(1, 1, 1)
+                end
             end
         elseif ennemi.AI == "surveillance" then
             love.graphics.draw(imgPI, ennemi.X - 27, ennemi.Y - 54, 0, 0.8, 0.8)
