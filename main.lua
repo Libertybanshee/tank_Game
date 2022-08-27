@@ -7,7 +7,8 @@ end
 io.stdout:setvbuf("no")
 
 -- Variable d'essai Coding
-
+local scene = "titre"
+require("titre")
 -- Algo impact elements
 function distance(x1, y1, x2, y2)
     return ((x2 - x1) ^ 2 + (y2 - y1) ^ 2) ^ 0.5
@@ -217,6 +218,10 @@ function love.load()
 end
 
 function love.update(dt)
+    if scene == "titre" then
+        updateMenu(dt)
+    elseif scene == "game" then
+
 -- Raccourcie Souris
     mouseR = love.mouse.isDown(2)
     mouseL = love.mouse.isDown(1)
@@ -431,9 +436,15 @@ function love.update(dt)
         SpanwEnnemi(780, 140, south, 0.225, 20, imgEnnemi_1, "move", 3)
         SpanwEnnemi(700, 420, west, 0.225, 20, imgEnnemi_1, "move", 3)
     end
+    
+end
 end
 
 function love.draw()
+    if scene == "titre" then
+        drawMenu()
+    elseif scene == "game" then
+
 -- Afficher Carte
     love.graphics.draw(imgMap,0 ,0)
 
@@ -624,6 +635,8 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1)
         end
     end
+
+end
 end
 
 function love.mousepressed(b)  
@@ -645,6 +658,10 @@ function love.mousepressed(b)
 end
 
 function love.keypressed(key)  
+    -- print(key)
+    if key == "space" and scene == "titre" then
+        scene = "game"
+    end
     -- Activer le Debug / create variable ligne 49 / draw ligne 226
     if love.keyboard.isDown("f1") then
         debug = not debug
