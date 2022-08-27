@@ -151,6 +151,7 @@ end
 function Start()
     ennemis = {}
     projectiles = {}
+    goal = {}
     tank.X = spawnPlayer.X + (spawnPlayer.taille / 2)
     tank.Y = spawnPlayer.Y + (spawnPlayer.taille / 2)
     tank.angle = spawnPlayer.angle
@@ -219,9 +220,10 @@ function love.load()
 end
 
 function love.update(dt)
+    print(goal.hit)
     if scene == "titre" then
         updateMenu(dt)
-    elseif scene == "game" then
+    else
 
         -- Raccourcie Souris
         mouseR = love.mouse.isDown(2)
