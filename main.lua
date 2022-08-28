@@ -7,6 +7,9 @@ end
 io.stdout:setvbuf("no")
 
 -- Variable d'essai Coding
+timerTitre = 0
+showTitre = false
+
 local scene = "titre"
 require("titre")
 require("level2")
@@ -173,6 +176,11 @@ function love.load()
     imgPI = love.graphics.newImage("img/UI/PI.png")
     imgDecompte = love.graphics.newImage("img/UI/decompte.png")
     imgFire = love.graphics.newImage("img/UI/fire.png")
+    imgFond = love.graphics.newImage("img/UI/fondTank.jpeg")
+    imgTitre = love.graphics.newImage("img/UI/titre.jpg")
+    imgDemoT = love.graphics.newImage("img/UI/titre_demoT.png")
+    imgGamecodeurT = love.graphics.newImage("img/UI/titre_gamecodeurT.png")
+    imgGametankT = love.graphics.newImage("img/UI/titre_tankgameT.png")
 
 -- Relancer le jeu
     Start()
@@ -220,9 +228,15 @@ function love.load()
 end
 
 function love.update(dt)
-    print(goal.hit)
     if scene == "titre" then
+        timerTitre = timerTitre + dt
+        if math.ceil(timerTitre) ~= Second then
+            showTitre = not showTitre
+            Second = math.ceil(timerTitre)
+        end
         updateMenu(dt)
+        print(showTitre)
+        print("Timer : " .. tostring(timerTitre)) 
     else
 
         -- Raccourcie Souris
